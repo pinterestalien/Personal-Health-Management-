@@ -1,0 +1,101 @@
+<!-- pages/report/report.wxml -->
+<view class="rep-page">
+  <view class="rep-head">
+    <view class="rh-title">健康报告</view>
+    <view class="rh-sub">{{period}} · {{avgWeight ? '已生成' : '数据不足'}}</view>
+  </view>
+
+  <!-- 平均指标 -->
+  <view class="avg-grid">
+    <view class="avg card">
+      <view class="avg-num">{{avgWeight || '—'}}</view>
+      <view class="avg-u">kg</view>
+      <view class="avg-l">平均体重</view>
+    </view>
+    <view class="avg card">
+      <view class="avg-num">{{avgSteps || '—'}}</view>
+      <view class="avg-u">步</view>
+      <view class="avg-l">日均步数</view>
+    </view>
+    <view class="avg card">
+      <view class="avg-num">{{avgSleep || '—'}}</view>
+      <view class="avg-u">h</view>
+      <view class="avg-l">日均睡眠</view>
+    </view>
+  </view>
+
+  <!-- 运动汇总 -->
+  <view class="card ex-sum">
+    <view class="row-between">
+      <text class="section-title">本周运动</text>
+      <text class="dim">{{exCount}}次</text>
+    </view>
+    <view class="ex-stats">
+      <view class="es-cell">
+        <view class="es-num">{{exDuration}}</view>
+        <view class="es-l">分钟</view>
+      </view>
+      <view class="es-div"></view>
+      <view class="es-cell">
+        <view class="es-num">{{exCalories}}</view>
+        <view class="es-l">kcal</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 体重折线 -->
+  <view class="card chart-card">
+    <view class="row-between">
+      <text class="section-title">体重变化</text>
+      <text class="dim">kg</text>
+    </view>
+    <view class="line-chart">
+      <view class="line-area">
+        <view class="line-bar" wx:for="{{weightTrend}}" wx:key="date"
+              style="height:{{item.value ? (item.value - wMin)/(wMax - wMin)*100 : 0}}%"></view>
+      </view>
+      <view class="x-labels">
+        <text wx:for="{{weightTrend}}" wx:key="date">{{item.date}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 步数柱状 -->
+  <view class="card chart-card">
+    <view class="row-between">
+      <text class="section-title">每日步数</text>
+      <text class="dim">步</text>
+    </view>
+    <view class="bar-chart">
+      <view class="bar-col" wx:for="{{stepsTrend}}" wx:key="date">
+        <view class="bar-track">
+          <view class="bar" style="height:{{item.value ? (item.value - sMin)/(sMax - sMin)*100 : 0}}%"></view>
+        </view>
+        <view class="bar-label">{{item.date}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 睡眠柱状 -->
+  <view class="card chart-card">
+    <view class="row-between">
+      <text class="section-title">每日睡眠</text>
+      <text class="dim">小时</text>
+    </view>
+    <view class="bar-chart">
+      <view class="bar-col" wx:for="{{sleepTrend}}" wx:key="date">
+        <view class="bar-track">
+          <view class="bar" style="height:{{item.value ? (item.value - slMin)/(slMax - slMin)*100 : 0}}%"></view>
+        </view>
+        <view class="bar-label">{{item.date}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 健康建议 -->
+  <text class="section-title block-title">健康建议</text>
+  <view class="tip card" wx:for="{{tips}}" wx:key="text">
+    <view class="tip-ico">{{item.icon}}</view>
+    <view class="tip-text flex1">{{item.text}}</view>
+  </view>
+</view>

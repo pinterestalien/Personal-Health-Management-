@@ -1,0 +1,147 @@
+/* app.wxss — 全局样式与健康主题设计系统 */
+
+page {
+  --c-bg: #F2F5F4;
+  --c-surface: #FFFFFF;
+  --c-surface-2: #F7FAF9;
+  --c-text: #14201D;
+  --c-text-2: #5C6E69;
+  --c-text-3: #93A39E;
+  --c-line: #E6ECEA;
+
+  --c-primary: #0E7C66;
+  --c-primary-soft: #E6F4F0;
+  --c-accent: #F5A623;
+  --c-warn: #E8604D;
+  --c-info: #3B7DD8;
+
+  --c-good: #2EA37A;
+  --c-mid: #E9A23B;
+  --c-bad: #D9534F;
+
+  --radius: 20rpx;
+  --radius-sm: 12rpx;
+  --shadow: 0 6rpx 24rpx rgba(20, 32, 29, 0.06);
+  --shadow-soft: 0 4rpx 16rpx rgba(20, 32, 29, 0.04);
+
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: -apple-system, "PingFang SC", "Helvetica Neue", Helvetica, sans-serif;
+  font-size: 28rpx;
+  line-height: 1.55;
+}
+
+view, text, scroll-view { box-sizing: border-box; }
+
+/* 通用工具类 */
+.page-wrap { padding: 28rpx 28rpx 60rpx; }
+
+.section-title {
+  font-size: 30rpx;
+  font-weight: 600;
+  color: var(--c-text);
+  letter-spacing: 0.5rpx;
+}
+
+.section-sub {
+  font-size: 24rpx;
+  color: var(--c-text-3);
+  margin-top: 6rpx;
+}
+
+.muted { color: var(--c-text-2); }
+.dim { color: var(--c-text-3); }
+
+.card {
+  background: var(--c-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  padding: 28rpx;
+}
+
+.row { display: flex; align-items: center; }
+.row-between { display: flex; align-items: center; justify-content: space-between; }
+.col { display: flex; flex-direction: column; }
+.flex1 { flex: 1; }
+.gap-12 { gap: 12rpx; }
+.gap-16 { gap: 16rpx; }
+.gap-20 { gap: 20rpx; }
+.gap-24 { gap: 24rpx; }
+
+.divider {
+  height: 1rpx;
+  background: var(--c-line);
+  margin: 24rpx 0;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  font-size: 22rpx;
+  padding: 6rpx 16rpx;
+  border-radius: 999rpx;
+  background: var(--c-primary-soft);
+  color: var(--c-primary);
+}
+
+.tag-good { background: #E6F4EE; color: var(--c-good); }
+.tag-mid { background: #FBF0DC; color: var(--c-mid); }
+.tag-bad { background: #FBE9E7; color: var(--c-bad); }
+
+/* 主按钮 */
+.btn-primary {
+  background: var(--c-primary);
+  color: #fff;
+  border-radius: 999rpx;
+  font-size: 30rpx;
+  font-weight: 600;
+  padding: 22rpx 0;
+  text-align: center;
+  border: none;
+  line-height: 1.2;
+}
+.btn-primary[disabled] { opacity: 0.5; }
+
+.btn-ghost {
+  background: var(--c-surface);
+  color: var(--c-primary);
+  border: 2rpx solid var(--c-primary);
+  border-radius: 999rpx;
+  font-size: 28rpx;
+  font-weight: 600;
+  padding: 18rpx 0;
+  text-align: center;
+}
+
+/* FAB 悬浮添加按钮 */
+.fab {
+  position: fixed;
+  right: 40rpx;
+  bottom: 140rpx;
+  width: 104rpx;
+  height: 104rpx;
+  border-radius: 50%;
+  background: var(--c-primary);
+  color: #fff;
+  font-size: 64rpx;
+  line-height: 96rpx;
+  text-align: center;
+  box-shadow: 0 10rpx 28rpx rgba(14, 124, 102, 0.38);
+  z-index: 50;
+}
+
+/* 顶部状态条/卡片头部 */
+.kpi-num {
+  font-size: 52rpx;
+  font-weight: 700;
+  color: var(--c-text);
+  letter-spacing: -1rpx;
+}
+.kpi-unit { font-size: 24rpx; color: var(--c-text-3); margin-left: 6rpx; }
+
+.empty-state {
+  text-align: center;
+  padding: 70rpx 0;
+  color: var(--c-text-3);
+  font-size: 26rpx;
+}

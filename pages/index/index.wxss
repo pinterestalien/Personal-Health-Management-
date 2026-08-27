@@ -1,0 +1,97 @@
+/* pages/index/index.wxss */
+.home { padding: 0 28rpx 60rpx; }
+
+/* Hero */
+.hero {
+  background: linear-gradient(145deg, #0E7C66 0%, #10997C 100%);
+  border-radius: 28rpx;
+  padding: 36rpx 32rpx 30rpx;
+  margin-top: 20rpx;
+  color: #fff;
+  box-shadow: 0 12rpx 32rpx rgba(14, 124, 102, 0.28);
+}
+.hero-top { display: flex; align-items: center; justify-content: space-between; }
+.hero-greet { font-size: 36rpx; font-weight: 700; letter-spacing: 0.5rpx; }
+.hero-date { font-size: 24rpx; opacity: 0.85; margin-top: 6rpx; }
+
+.hero-ring {
+  width: 168rpx; height: 168rpx; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  transition: background 0.4s;
+}
+.hero-ring-inner {
+  width: 130rpx; height: 130rpx; border-radius: 50%;
+  background: rgba(14, 124, 102, 0.92);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.ring-num { font-size: 40rpx; font-weight: 700; line-height: 1; }
+.ring-label { font-size: 20rpx; opacity: 0.85; margin-top: 6rpx; }
+
+.hero-stats {
+  display: flex; margin-top: 36rpx; gap: 18rpx;
+}
+.hero-stat { flex: 1; background: rgba(255,255,255,0.12); border-radius: 18rpx; padding: 18rpx 20rpx; }
+.hs-val { font-size: 34rpx; font-weight: 700; line-height: 1.1; }
+.hs-unit { font-size: 20rpx; opacity: 0.85; margin-left: 4rpx; }
+.hs-label { font-size: 22rpx; opacity: 0.85; margin-top: 4rpx; }
+.hs-bar { height: 8rpx; background: rgba(255,255,255,0.22); border-radius: 999rpx; margin-top: 12rpx; overflow: hidden; }
+.hs-bar-fill { height: 100%; background: #fff; border-radius: 999rpx; transition: width 0.4s; }
+
+/* Quick */
+.quick {
+  display: flex; flex-wrap: wrap; margin: 28rpx -8rpx;
+}
+.quick-item {
+  width: 25%; box-sizing: border-box; padding: 8rpx; text-align: center;
+}
+.quick-item .qi-ico {
+  width: 88rpx; height: 88rpx; margin: 0 auto; border-radius: 24rpx;
+  background: var(--c-surface); display: flex; align-items: center; justify-content: center;
+  font-size: 42rpx; box-shadow: var(--shadow-soft);
+}
+.quick-item .qi-t { font-size: 22rpx; color: var(--c-text-2); margin-top: 12rpx; }
+
+/* Blocks */
+.block { margin-top: 36rpx; }
+.more { font-size: 24rpx; color: var(--c-primary); }
+
+/* Vitals grid */
+.vitals { display: flex; flex-wrap: wrap; gap: 16rpx; }
+.vital { width: calc(50% - 8rpx); padding: 24rpx; }
+.v-row { display: flex; align-items: center; justify-content: space-between; }
+.v-label { font-size: 26rpx; color: var(--c-text-2); }
+.v-value { font-size: 44rpx; font-weight: 700; margin-top: 14rpx; letter-spacing: -0.5rpx; }
+.v-unit { font-size: 22rpx; color: var(--c-text-3); margin-left: 6rpx; font-weight: 400; }
+.v-sub { font-size: 22rpx; color: var(--c-text-3); margin-top: 8rpx; }
+
+/* Chart */
+.chart { display: flex; align-items: flex-end; height: 260rpx; gap: 14rpx; padding-top: 10rpx; }
+.bar-col { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; }
+.bar-track {
+  flex: 1; width: 100%; display: flex; align-items: flex-end; justify-content: center;
+}
+.bar {
+  width: 60%; max-width: 48rpx; background: linear-gradient(180deg, #1AA88A, #0E7C66);
+  border-radius: 10rpx 10rpx 4rpx 4rpx; min-height: 6rpx;
+  transition: height 0.4s;
+}
+.bar-val { font-size: 18rpx; color: var(--c-text-2); margin-top: 6rpx; }
+.bar-label { font-size: 20rpx; color: var(--c-text-3); margin-top: 4rpx; }
+
+/* Med */
+.med-row { display: flex; align-items: center; padding: 18rpx 0; gap: 20rpx; }
+.med-row + .med-row { border-top: 1rpx solid var(--c-line); }
+.med-ico {
+  width: 72rpx; height: 72rpx; border-radius: 18rpx; background: var(--c-primary-soft);
+  display: flex; align-items: center; justify-content: center; font-size: 34rpx; opacity: 0.5;
+}
+.med-ico.taken { opacity: 1; background: #E6F4EE; }
+.med-name { font-size: 30rpx; font-weight: 600; }
+.med-time { font-size: 22rpx; color: var(--c-text-3); margin-top: 4rpx; }
+.med-state {
+  font-size: 24rpx; padding: 10rpx 24rpx; border-radius: 999rpx;
+  background: #FBF0DC; color: var(--c-mid);
+}
+.med-state.done { background: #E6F4EE; color: var(--c-good); }
+
+.foot-pad { height: 40rpx; }

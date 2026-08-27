@@ -1,0 +1,50 @@
+<!-- pages/profile-edit/profile-edit.wxml -->
+<view class="form">
+  <text class="section-title block-title">基本资料</text>
+
+  <view class="card field">
+    <view class="field-label">昵称</view>
+    <input class="field-input" placeholder="请输入昵称" value="{{name}}" bindinput="onName" />
+  </view>
+
+  <view class="card field">
+    <view class="field-label">性别</view>
+    <picker mode="selector" range="{{genderList}}" value="{{genderIndex}}" bindchange="onGender">
+      <view class="field-input picker">{{genderList[genderIndex]}}</view>
+    </picker>
+  </view>
+
+  <view class="card field">
+    <view class="field-label">年龄</view>
+    <input class="field-input" type="number" placeholder="岁" value="{{age}}" bindinput="onAge" />
+  </view>
+
+  <view class="card field">
+    <view class="field-label">身高</view>
+    <input class="field-input" type="digit" placeholder="cm" value="{{height}}" bindinput="onHeight" />
+  </view>
+
+  <text class="section-title block-title">健康目标</text>
+
+  <view class="card field">
+    <view class="field-label">每日步数目标</view>
+    <input class="field-input" type="number" placeholder="步" value="{{steps}}" bindinput="onSteps" />
+  </view>
+
+  <view class="card field">
+    <view class="field-label">每日饮水目标</view>
+    <input class="field-input" type="number" placeholder="ml" value="{{water}}" bindinput="onWater" />
+  </view>
+
+  <view class="card field">
+    <view class="field-label">每日睡眠目标</view>
+    <input class="field-input" type="digit" placeholder="小时" value="{{sleep}}" bindinput="onSleep" />
+  </view>
+
+  <view class="card field">
+    <view class="field-label">目标体重</view>
+    <input class="field-input" type="digit" placeholder="kg" value="{{weight}}" bindinput="onWeight" />
+  </view>
+
+  <button class="btn-primary" bindtap="save">保存资料</button>
+</view>

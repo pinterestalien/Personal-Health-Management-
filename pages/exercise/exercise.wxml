@@ -1,0 +1,51 @@
+<!-- pages/exercise/exercise.wxml -->
+<view class="ex-page">
+  <!-- 周期统计 -->
+  <view class="summary">
+    <view class="sum-item">
+      <view class="sum-num">{{totalTimes}}</view>
+      <view class="sum-label">运动次数</view>
+    </view>
+    <view class="sum-div"></view>
+    <view class="sum-item">
+      <view class="sum-num">{{totalDuration}}<text class="sum-u">分钟</text></view>
+      <view class="sum-label">累计时长</view>
+    </view>
+    <view class="sum-div"></view>
+    <view class="sum-item">
+      <view class="sum-num">{{totalCalories}}<text class="sum-u">kcal</text></view>
+      <view class="sum-label">消耗热量</view>
+    </view>
+  </view>
+
+  <!-- 类型筛选 -->
+  <scroll-view scroll-x class="filters" enhanced show-scrollbar="{{false}}">
+    <view class="filter-inner">
+      <view class="filter {{filter === item.key ? 'on' : ''}}"
+            wx:for="{{typeOptions}}" wx:key="key" data-key="{{item.key}}" bindtap="switchFilter">
+        {{item.label}}
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 列表 -->
+  <view class="list">
+    <view class="empty-state" wx:if="{{!list.length}}">暂无运动记录</view>
+    <view class="ex card" wx:for="{{list}}" wx:key="id">
+      <view class="ex-ico">{{item.typeLabel}}</view>
+      <view class="ex-main">
+        <view class="ex-title">{{item.typeLabel}} · {{item.intensity}}强度</view>
+        <view class="ex-meta">{{item.dateText}} · {{item.timeText}}</view>
+        <view class="ex-stats">
+          <text class="es">{{item.duration}}分钟</text>
+          <text class="es-dot">·</text>
+          <text class="es">{{item.calories}}kcal</text>
+        </view>
+        <view class="ex-note" wx:if="{{item.note}}">{{item.note}}</view>
+      </view>
+      <view class="ex-del" data-id="{{item.id}}" bindtap="del">删除</view>
+    </view>
+  </view>
+
+  <view class="fab" bindtap="goAdd">+</view>
+</view>

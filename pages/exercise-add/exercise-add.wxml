@@ -1,0 +1,33 @@
+<!-- pages/exercise-add/exercise-add.wxml -->
+<view class="form">
+  <view class="card field">
+    <view class="field-label">运动类型</view>
+    <picker mode="selector" range="{{typeLabels}}" value="{{typeIndex}}" bindchange="onType">
+      <view class="field-input picker">{{typeLabels[typeIndex]}}</view>
+    </picker>
+  </view>
+
+  <view class="card field">
+    <view class="field-label">运动时长（分钟）</view>
+    <input class="field-input" type="digit" placeholder="例如 30" value="{{duration}}" bindinput="onDuration" />
+  </view>
+
+  <view class="card field">
+    <view class="field-label">强度</view>
+    <picker mode="selector" range="{{intensityList}}" value="{{intensityIndex}}" bindchange="onIntensity">
+      <view class="field-input picker">{{intensityList[intensityIndex]}}</view>
+    </picker>
+  </view>
+
+  <view class="card field">
+    <view class="field-label">消耗热量（kcal，可选）</view>
+    <input class="field-input" type="digit" placeholder="自动估算可留空" value="{{calories}}" bindinput="onCalories" />
+  </view>
+
+  <view class="card field">
+    <view class="field-label">备注（可选）</view>
+    <input class="field-input" placeholder="如：晨跑 5km" value="{{note}}" bindinput="onNote" />
+  </view>
+
+  <button class="btn-primary" bindtap="save">保存运动记录</button>
+</view>

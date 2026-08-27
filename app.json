@@ -1,0 +1,53 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/record/record",
+    "pages/exercise/exercise",
+    "pages/medication/medication",
+    "pages/profile/profile",
+    "pages/record-add/record-add",
+    "pages/exercise-add/exercise-add",
+    "pages/medication-add/medication-add",
+    "pages/profile-edit/profile-edit",
+    "pages/report/report"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#0E7C66",
+    "navigationBarTextStyle": "white",
+    "navigationBarTitleText": "健康管家",
+    "backgroundColor": "#F2F5F4",
+    "backgroundTextStyle": "dark",
+    "enablePullDownRefresh": false
+  },
+  "tabBar": {
+    "color": "#8A9B98",
+    "selectedColor": "#0E7C66",
+    "backgroundColor": "#FFFFFF",
+    "borderStyle": "white",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页"
+      },
+      {
+        "pagePath": "pages/record/record",
+        "text": "记录"
+      },
+      {
+        "pagePath": "pages/exercise/exercise",
+        "text": "运动"
+      },
+      {
+        "pagePath": "pages/medication/medication",
+        "text": "用药"
+      },
+      {
+        "pagePath": "pages/profile/profile",
+        "text": "我的"
+      }
+    ]
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

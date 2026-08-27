@@ -1,0 +1,38 @@
+<!-- pages/record-add/record-add.wxml -->
+<view class="form">
+  <view class="form-header">
+    <view class="fh-ico">{{metric.icon}}</view>
+    <view class="fh-title">{{metric.label}}记录</view>
+    <view class="fh-unit">单位：{{metric.unit}}</view>
+  </view>
+
+  <view class="card field">
+    <view class="field-label">{{type === 'bloodPressure' ? '收缩压 / 高压' : metric.label}}</view>
+    <input class="field-input" type="digit" placeholder="请输入数值" value="{{value}}" bindinput="onVal" />
+  </view>
+
+  <view class="card field" wx:if="{{type === 'bloodPressure'}}">
+    <view class="field-label">舒张压 / 低压</view>
+    <input class="field-input" type="digit" placeholder="请输入数值" value="{{value2}}" bindinput="onVal2" />
+  </view>
+
+  <view class="card field">
+    <view class="field-label">测量日期</view>
+    <picker mode="date" value="{{date}}" end="{{today}}" bindchange="onDate">
+      <view class="field-input picker">{{date}}</view>
+    </picker>
+  </view>
+
+  <view class="card field">
+    <view class="field-label">备注（可选）</view>
+    <input class="field-input" placeholder="如：晨起测量" value="{{note}}" bindinput="onNote" />
+  </view>
+
+  <view class="tip" wx:if="{{type === 'bloodPressure'}}">血压参考：理想 &lt;120/80，正常 &lt;130/85，偏高 &lt;140/90</view>
+  <view class="tip" wx:elif="{{type === 'glucose'}}">空腹血糖参考：3.9–6.1 mmol/L</view>
+  <view class="tip" wx:elif="{{type === 'heartRate'}}">静息心率参考：60–100 bpm</view>
+  <view class="tip" wx:elif="{{type === 'temperature'}}">正常体温：36.1–37.2 °C</view>
+  <view class="tip" wx:elif="{{type === 'sleep'}}">建议成人每日睡眠 7–9 小时</view>
+
+  <button class="btn-primary" bindtap="save">保存记录</button>
+</view>

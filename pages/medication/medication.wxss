@@ -1,0 +1,53 @@
+/* pages/medication/medication.wxss */
+.med-page { padding: 28rpx 28rpx 120rpx; }
+
+.progress-card {
+  background: linear-gradient(145deg, #0E7C66, #10997C);
+  border-radius: 24rpx; padding: 32rpx; color: #fff;
+  box-shadow: 0 12rpx 32rpx rgba(14,124,102,0.26);
+}
+.pc-title { font-size: 32rpx; font-weight: 700; }
+.pc-sub { font-size: 24rpx; opacity: 0.85; margin-top: 6rpx; }
+.pc-ring {
+  width: 120rpx; height: 120rpx; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.pc-ring-inner {
+  width: 92rpx; height: 92rpx; border-radius: 50%; background: #0E7C66;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 32rpx; font-weight: 700;
+}
+.pc-pct { font-size: 20rpx; margin-left: 2rpx; }
+
+.list { margin-top: 8rpx; }
+.med { display: flex; align-items: center; padding: 24rpx; margin-bottom: 16rpx; gap: 20rpx; }
+.med.is-taken { background: var(--c-surface-2); }
+
+.med-check {
+  width: 52rpx; height: 52rpx; border-radius: 50%; flex-shrink: 0;
+  border: 3rpx solid var(--c-line); display: flex; align-items: center; justify-content: center;
+}
+.med-check.checked { background: var(--c-good); border-color: var(--c-good); }
+.check-mark { color: #fff; font-size: 30rpx; font-weight: 700; }
+
+.med-main { }
+.med-name-row { display: flex; align-items: center; gap: 12rpx; }
+.med-name { font-size: 30rpx; font-weight: 600; }
+.med-name.line-through { text-decoration: line-through; color: var(--c-text-3); }
+.med-name.disabled { color: var(--c-text-3); }
+.med-info { font-size: 24rpx; color: var(--c-text-2); margin-top: 6rpx; }
+.med-note { font-size: 22rpx; color: var(--c-text-3); margin-top: 6rpx; }
+
+.med-ctrl { display: flex; flex-direction: column; align-items: flex-end; gap: 16rpx; }
+.mc-switch {
+  width: 76rpx; height: 40rpx; border-radius: 999rpx; background: #DDE4E2;
+  position: relative; transition: background 0.2s;
+}
+.mc-switch.on { background: var(--c-primary); }
+.mc-knob {
+  width: 32rpx; height: 32rpx; border-radius: 50%; background: #fff;
+  position: absolute; top: 4rpx; left: 4rpx; transition: left 0.2s;
+  box-shadow: 0 2rpx 6rpx rgba(0,0,0,0.15);
+}
+.mc-switch.on .mc-knob { left: 40rpx; }
+.mc-del { font-size: 22rpx; color: var(--c-warn); }

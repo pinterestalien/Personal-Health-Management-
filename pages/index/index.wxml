@@ -1,0 +1,105 @@
+<!-- pages/index/index.wxml -->
+<view class="home">
+
+  <!-- Hero 概览卡 -->
+  <view class="hero">
+    <view class="hero-top">
+      <view class="col">
+        <view class="hero-greet">{{greeting}}，{{profile.name}}</view>
+        <view class="hero-date">{{dateText}}</view>
+      </view>
+      <view class="hero-ring" style="background: conic-gradient(rgba(255,255,255,0.92) {{ringDeg}}deg, rgba(255,255,255,0.18) 0deg);">
+        <view class="hero-ring-inner">
+          <view class="ring-num">{{steps}}</view>
+          <view class="ring-label">步 / 目标{{stepGoal}}</view>
+        </view>
+      </view>
+    </view>
+
+    <view class="hero-stats">
+      <view class="hero-stat">
+        <view class="hs-val">{{water}}<text class="hs-unit">ml</text></view>
+        <view class="hs-label">饮水 {{waterPct}}%</view>
+        <view class="hs-bar"><view class="hs-bar-fill" style="width:{{waterPct}}%"></view></view>
+      </view>
+      <view class="hero-stat">
+        <view class="hs-val">{{sleep}}<text class="hs-unit">h</text></view>
+        <view class="hs-label">睡眠</view>
+      </view>
+      <view class="hero-stat">
+        <view class="hs-val">{{exCal}}<text class="hs-unit">kcal</text></view>
+        <view class="hs-label">运动 {{exDuration}}分钟</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快捷记录 -->
+  <view class="quick">
+    <view class="quick-item" data-type="steps" bindtap="goRecord"><view class="qi-ico">🏃</view><view class="qi-t">记步数</view></view>
+    <view class="quick-item" data-type="water" bindtap="goRecord"><view class="qi-ico">💧</view><view class="qi-t">记饮水</view></view>
+    <view class="quick-item" data-type="weight" bindtap="goRecord"><view class="qi-ico">⚖️</view><view class="qi-t">记体重</view></view>
+    <view class="quick-item" data-type="bloodPressure" bindtap="goRecord"><view class="qi-ico">❤️</view><view class="qi-t">记血压</view></view>
+    <view class="quick-item" data-type="heartRate" bindtap="goRecord"><view class="qi-ico">💓</view><view class="qi-t">记心率</view></view>
+    <view class="quick-item" data-type="sleep" bindtap="goRecord"><view class="qi-ico">😴</view><view class="qi-t">记睡眠</view></view>
+    <view class="quick-item" data-type="glucose" bindtap="goRecord"><view class="qi-ico">🩸</view><view class="qi-t">记血糖</view></view>
+    <view class="quick-item" data-type="temperature" bindtap="goRecord"><view class="qi-ico">🌡️</view><view class="qi-t">记体温</view></view>
+  </view>
+
+  <!-- 最新指标 -->
+  <view class="block">
+    <view class="row-between" style="padding:0 4rpx 20rpx;">
+      <text class="section-title">最新指标</text>
+      <text class="more" bindtap="goRecord" data-type="">全部 ›</text>
+    </view>
+    <view class="vitals">
+      <view class="vital card" wx:for="{{vitals}}" wx:key="label">
+        <view class="v-row">
+          <text class="v-label">{{item.label}}</text>
+          <text class="tag {{item.cls}}">{{item.status}}</text>
+        </view>
+        <view class="v-value">{{item.value}}<text class="v-unit">{{item.unit}}</text></view>
+        <view class="v-sub">{{item.sub}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 体重趋势 -->
+  <view class="block">
+    <view class="row-between" style="padding:0 4rpx 20rpx;">
+      <text class="section-title">体重趋势</text>
+      <text class="more" bindtap="goReport">报告 ›</text>
+    </view>
+    <view class="card">
+      <view class="chart">
+        <view class="bar-col" wx:for="{{weightTrend}}" wx:key="date">
+          <view class="bar-track">
+            <view class="bar" style="height:{{item.value ? (item.value - weightMin)/(weightMax - weightMin)*100 : 0}}%"></view>
+          </view>
+          <view class="bar-val" wx:if="{{item.value}}">{{item.value}}</view>
+          <view class="bar-label">{{item.date}}</view>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日用药 -->
+  <view class="block">
+    <view class="row-between" style="padding:0 4rpx 20rpx;">
+      <text class="section-title">今日用药</text>
+      <text class="more" bindtap="goMed">管理 ›</text>
+    </view>
+    <view class="card med-card" wx:if="{{meds.length}}">
+      <view class="med-row" wx:for="{{meds}}" wx:key="id" data-id="{{item.id}}" bindtap="tapMed">
+        <view class="med-ico {{item.taken ? 'taken' : ''}}">💊</view>
+        <view class="flex1">
+          <view class="med-name">{{item.name}} · {{item.dosage}}</view>
+          <view class="med-time">{{item.time}} · {{item.frequency}}</view>
+        </view>
+        <view class="med-state {{item.taken ? 'done' : ''}}">{{item.taken ? '已服' : '未服'}}</view>
+      </view>
+    </view>
+    <view class="card empty-state" wx:else>暂无用药提醒</view>
+  </view>
+
+  <view class="foot-pad"></view>
+</view>

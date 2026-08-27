@@ -1,0 +1,47 @@
+<!-- pages/record/record.wxml -->
+<view class="rec-page">
+  <!-- 指标选择 -->
+  <scroll-view scroll-x class="tabs" enhanced show-scrollbar="{{false}}">
+    <view class="tab-inner">
+      <view class="tab {{active === item.key ? 'on' : ''}}"
+            wx:for="{{tabs}}" wx:key="key" data-key="{{item.key}}" bindtap="switchTab">
+        <text class="tab-ico">{{item.icon}}</text>
+        <text class="tab-t">{{item.label}}</text>
+      </view>
+    </view>
+  </scroll-view>
+
+  <!-- 趋势图 -->
+  <view class="card trend-card" wx:if="{{records.length}}">
+    <view class="row-between">
+      <text class="section-title">{{metric.label}}趋势</text>
+      <text class="dim" style="font-size:22rpx;">最近7次</text>
+    </view>
+    <view class="chart">
+      <view class="bar-col" wx:for="{{trend}}" wx:key="label">
+        <view class="bar-track">
+          <view class="bar" style="height:{{item.value ? (item.value - trendMin)/(trendMax - trendMin)*100 : 0}}%"></view>
+        </view>
+        <view class="bar-val">{{item.value}}</view>
+        <view class="bar-label">{{item.label}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 记录列表 -->
+  <view class="list">
+    <view class="empty-state" wx:if="{{!records.length}}">
+      暂无{{metric.label}}记录\n点击右下角 + 添加第一条
+    </view>
+    <view class="rec card" wx:for="{{records}}" wx:key="id">
+      <view class="rec-main">
+        <view class="rec-val">{{item.valueText}}<text class="rec-unit">{{metric.unit}}</text></view>
+        <view class="rec-meta">{{item.dateText}} · {{item.timeText}}</view>
+        <view class="rec-note" wx:if="{{item.note}}">备注：{{item.note}}</view>
+      </view>
+      <view class="rec-del" data-id="{{item.id}}" bindtap="delRecord">删除</view>
+    </view>
+  </view>
+
+  <view class="fab" bindtap="goAdd">+</view>
+</view>
