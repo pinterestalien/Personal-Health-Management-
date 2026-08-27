@@ -1,0 +1,69 @@
+/* pages/period/period.wxss */
+.pd-page { padding: 28rpx 28rpx 120rpx; }
+
+/* 状态卡 - 按阶段着色 */
+.status-card {
+  border-radius: 24rpx; padding: 30rpx 32rpx; color: #fff;
+  box-shadow: 0 12rpx 32rpx rgba(14,124,102,0.24);
+}
+.status-card.period { background: linear-gradient(145deg, #E8604D, #F0897A); box-shadow: 0 12rpx 32rpx rgba(232,96,77,0.28); }
+.status-card.fertile { background: linear-gradient(145deg, #E9A23B, #F5C26B); box-shadow: 0 12rpx 32rpx rgba(233,162,59,0.26); }
+.status-card.luteal { background: linear-gradient(145deg, #9B5BBF, #B989D8); box-shadow: 0 12rpx 32rpx rgba(155,91,191,0.26); }
+.status-card.safe { background: linear-gradient(145deg, #0E7C66, #10997C); }
+
+.sc-top { display: flex; align-items: center; justify-content: space-between; }
+.sc-phase { font-size: 40rpx; font-weight: 700; letter-spacing: 1rpx; }
+.sc-sub { font-size: 24rpx; opacity: 0.92; margin-top: 8rpx; }
+.sc-cycle { text-align: right; }
+.sc-cycle-num { font-size: 64rpx; font-weight: 700; line-height: 1; }
+.sc-cycle-l { font-size: 20rpx; opacity: 0.85; margin-top: 4rpx; }
+.sc-foot { font-size: 22rpx; opacity: 0.85; margin-top: 24rpx; padding-top: 20rpx; border-top: 1rpx solid rgba(255,255,255,0.2); }
+
+/* 预测 */
+.pred { display: flex; gap: 16rpx; margin-top: 24rpx; }
+.pred-item { flex: 1; text-align: center; padding: 24rpx 12rpx; }
+.pi-ico { width: 72rpx; height: 72rpx; border-radius: 50%; margin: 0 auto 12rpx;
+  display: flex; align-items: center; justify-content: center; font-size: 34rpx; }
+.pd-ico-next { background: #FBE9E7; }
+.pd-ico-ovu { background: #FBF0DC; }
+.pd-ico-fertile { background: #F7E9F5; }
+.pi-val { font-size: 28rpx; font-weight: 700; }
+.pi-l { font-size: 20rpx; color: var(--c-text-3); margin-top: 6rpx; }
+
+/* 日历 */
+.cal-card { margin-top: 24rpx; }
+.cal-head { display: flex; align-items: center; justify-content: space-between; padding: 0 20rpx 20rpx; }
+.cal-title { font-size: 30rpx; font-weight: 600; }
+.cal-nav { font-size: 44rpx; color: var(--c-primary); width: 60rpx; text-align: center; line-height: 1; }
+.cal-week { display: flex; padding: 6rpx 0 12rpx; }
+.cw { flex: 1; text-align: center; font-size: 22rpx; color: var(--c-text-3); }
+.cal-grid { display: flex; flex-wrap: wrap; }
+.cc { width: calc(100% / 7); height: 88rpx; display: flex; align-items: center; justify-content: center; }
+.cc.blank { }
+.cc-dot {
+  width: 64rpx; height: 64rpx; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 26rpx; color: var(--c-text);
+}
+.cc-dot.on-period { background: #FBE9E7; color: #E8604D; font-weight: 700; }
+.cc-dot.on-fertile { background: #FBF0DC; color: #C8841F; }
+.cc-dot.on-ovu { background: #E9A23B; color: #fff; font-weight: 700; }
+.cc.today { }
+.cc.today .cc-dot { box-shadow: 0 0 0 3rpx var(--c-primary); }
+.cal-legend { display: flex; justify-content: space-around; margin-top: 24rpx; padding-top: 20rpx; border-top: 1rpx solid var(--c-line); }
+.lg { display: flex; align-items: center; gap: 8rpx; font-size: 20rpx; color: var(--c-text-3); }
+.lg-d { width: 20rpx; height: 20rpx; border-radius: 50%; }
+.lg-period { background: #E8604D; }
+.lg-fertile { background: #E9A23B; }
+.lg-ovu { background: #E9A23B; box-shadow: 0 0 0 3rpx #FBF0DC; }
+.lg-today { background: #fff; box-shadow: 0 0 0 3rpx var(--c-primary); }
+
+/* 历史 */
+.block-title { display: block; margin: 32rpx 4rpx 16rpx; }
+.hist-item { display: flex; align-items: center; padding: 24rpx; margin-bottom: 16rpx; gap: 16rpx; }
+.hi-main { flex: 1; }
+.hi-date { font-size: 28rpx; font-weight: 600; }
+.hi-meta { font-size: 22rpx; color: var(--c-text-2); margin-top: 8rpx; }
+.hi-sym { font-size: 22rpx; color: var(--c-text-3); margin-top: 6rpx; }
+.hi-note { font-size: 22rpx; color: var(--c-text-3); margin-top: 4rpx; }
+.hi-del { font-size: 24rpx; color: var(--c-warn); padding: 10rpx 16rpx; }

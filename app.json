@@ -9,7 +9,9 @@
     "pages/exercise-add/exercise-add",
     "pages/medication-add/medication-add",
     "pages/profile-edit/profile-edit",
-    "pages/report/report"
+    "pages/report/report",
+    "pages/period/period",
+    "pages/period-add/period-add"
   ],
   "window": {
     "navigationBarBackgroundColor": "#0E7C66",

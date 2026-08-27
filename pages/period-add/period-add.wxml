@@ -1,0 +1,57 @@
+<!-- pages/period-add/period-add.wxml -->
+<view class="form">
+  <view class="form-header">
+    <view class="fh-ico">🌸</view>
+    <view class="fh-title">{{isEdit ? '编辑经期' : '记录经期'}}</view>
+  </view>
+
+  <view class="card field">
+    <view class="field-label">开始日期</view>
+    <picker mode="date" value="{{startDate}}" end="{{today}}" bindchange="onStart">
+      <view class="field-input picker">{{startDate}}</view>
+    </picker>
+  </view>
+
+  <view class="card field">
+    <view class="row-between">
+      <view class="field-label" style="margin-bottom:0;">是否结束</view>
+      <view class="switch {{ongoing ? '' : 'on'}}" bindtap="toggleOngoing">
+        <view class="knob"></view>
+      </view>
+    </view>
+    <view class="switch-tip">{{ongoing ? '经期进行中（结束日期留空）' : '经期已结束，请选择结束日期'}}</view>
+  </view>
+
+  <view class="card field" wx:if="{{!ongoing}}">
+    <view class="field-label">结束日期</view>
+    <picker mode="date" value="{{endDate}}" end="{{today}}" bindchange="onEnd">
+      <view class="field-input picker">{{endDate || '请选择'}}</view>
+    </picker>
+  </view>
+
+  <view class="card field">
+    <view class="field-label">经量</view>
+    <view class="chips">
+      <view class="chip {{flowIndex === idx ? 'on' : ''}}" wx:for="{{flowOptions}}" wx:key="*this" wx:for-index="idx" data-i="{{idx}}" bindtap="onFlow">
+        {{item}}
+      </view>
+    </view>
+  </view>
+
+  <view class="card field">
+    <view class="field-label">症状（可多选）</view>
+    <view class="chips">
+      <view class="chip {{symptoms.length && symptoms.indexOf(item.idx) >= 0 ? 'on' : ''}}"
+            wx:for="{{symptomList}}" wx:key="idx" data-idx="{{item.idx}}" bindtap="toggleSymptom">
+        {{item.label}}
+      </view>
+    </view>
+  </view>
+
+  <view class="card field">
+    <view class="field-label">备注（可选）</view>
+    <input class="field-input" placeholder="如：第一天不适" value="{{note}}" bindinput="onNote" />
+  </view>
+
+  <button class="btn-primary" bindtap="save">{{isEdit ? '保存修改' : '保存记录'}}</button>
+</view>

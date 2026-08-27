@@ -192,6 +192,59 @@
   .m-arrow{ font-size:18px; color:var(--c-text-3); }
   .foot-tip{ text-align:center; font-size:11px; color:var(--c-text-3); margin-top:18px; }
 
+  /* ===== Period ===== */
+  .period-banner{ display:flex; align-items:center; gap:10px; padding:12px 14px; border-radius:16px; margin-top:12px; color:#fff; box-shadow:var(--shadow-soft); cursor:pointer; }
+  .pb.safe{background:linear-gradient(120deg,#0E7C66,#10997C);}
+  .pb.period{background:linear-gradient(120deg,#E8604D,#F0897A);}
+  .pb.fertile{background:linear-gradient(120deg,#E9A23B,#F5C26B);}
+  .pb.luteal{background:linear-gradient(120deg,#9B5BBF,#B989D8);}
+  .pb-ico{ width:36px; height:36px; border-radius:50%; background:rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; font-size:17px; flex-shrink:0; }
+  .pb-phase{ font-size:16px; font-weight:700; }
+  .pb-sub{ font-size:11px; opacity:.92; margin-top:2px; }
+  .pb-arrow{ font-size:20px; opacity:.8; margin-left:auto; }
+
+  .sc{ border-radius:16px; padding:15px 16px; color:#fff; box-shadow:0 12px 32px rgba(14,124,102,.24); }
+  .sc.period{ background:linear-gradient(145deg,#E8604D,#F0897A); }
+  .sc.fertile{ background:linear-gradient(145deg,#E9A23B,#F5C26B); }
+  .sc.luteal{ background:linear-gradient(145deg,#9B5BBF,#B989D8); }
+  .sc.safe{ background:linear-gradient(145deg,#0E7C66,#10997C); }
+  .sc-top{ display:flex; align-items:center; justify-content:space-between; }
+  .sc-phase{ font-size:20px; font-weight:700; }
+  .sc-sub{ font-size:12px; opacity:.92; margin-top:4px; }
+  .sc-cycle-num{ font-size:32px; font-weight:700; line-height:1; text-align:right; }
+  .sc-cycle-l{ font-size:10px; opacity:.85; margin-top:2px; }
+  .sc-foot{ font-size:11px; opacity:.85; margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,.2); }
+
+  .pred{ display:flex; gap:8px; margin-top:12px; }
+  .pred-item{ flex:1; text-align:center; padding:12px 6px; }
+  .pi-ico{ width:36px; height:36px; border-radius:50%; margin:0 auto 6px; display:flex; align-items:center; justify-content:center; font-size:17px; }
+  .pi-next{background:#FBE9E7;} .pi-ovu{background:#FBF0DC;} .pi-fert{background:#F7E9F5;}
+  .pi-val{ font-size:13px; font-weight:700; }
+  .pi-l{ font-size:10px; color:var(--c-text-3); margin-top:3px; }
+
+  .cal-card{ margin-top:12px; }
+  .cal-head{ display:flex; align-items:center; justify-content:space-between; padding:0 10px 10px; }
+  .cal-title{ font-size:15px; font-weight:600; }
+  .cal-nav{ font-size:22px; color:var(--c-primary); width:30px; text-align:center; cursor:pointer; }
+  .cal-week{ display:flex; padding:3px 0 6px; }
+  .cw{ flex:1; text-align:center; font-size:11px; color:var(--c-text-3); }
+  .cal-grid{ display:flex; flex-wrap:wrap; }
+  .cc{ width:calc(100% / 7); height:42px; display:flex; align-items:center; justify-content:center; }
+  .cc-dot{ width:31px; height:31px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:13px; }
+  .cc-dot.on-period{ background:#FBE9E7; color:#E8604D; font-weight:700; }
+  .cc-dot.on-fertile{ background:#FBF0DC; color:#C8841F; }
+  .cc-dot.on-ovu{ background:#E9A23B; color:#fff; font-weight:700; }
+  .cc.today .cc-dot{ box-shadow:0 0 0 2px var(--c-primary); }
+  .cal-legend{ display:flex; justify-content:space-around; margin-top:12px; padding-top:10px; border-top:1px solid var(--c-line); }
+  .lg{ display:flex; align-items:center; gap:4px; font-size:10px; color:var(--c-text-3); }
+  .lg-d{ width:10px; height:10px; border-radius:50%; }
+  .lg-period{background:#E8604D;} .lg-fertile{background:#E9A23B;} .lg-ovu{background:#E9A23B;box-shadow:0 0 0 2px #FBF0DC;} .lg-today{background:#fff;box-shadow:0 0 0 2px var(--c-primary);}
+  .hist-item{ display:flex; align-items:center; padding:12px; margin-bottom:8px; gap:8px; }
+  .hi-main{ flex:1; }
+  .hi-date{ font-size:14px; font-weight:600; }
+  .hi-meta{ font-size:11px; color:var(--c-text-2); margin-top:4px; }
+  .hi-del{ font-size:12px; color:var(--c-warn); cursor:pointer; }
+
   /* ===== Report ===== */
   .rep-head{ padding:4px 2px 14px; }
   .rh-title{ font-size:20px; font-weight:700; }
@@ -254,6 +307,15 @@
               <div class="hs-label">运动 35分钟</div>
             </div>
           </div>
+        </div>
+
+        <div class="period-banner pb luteal" onclick="go('period')">
+          <div class="pb-ico">🌸</div>
+          <div style="flex:1">
+            <div class="pb-phase">黄体期</div>
+            <div class="pb-sub">距下次经期 26 天 · 周期 28 天</div>
+          </div>
+          <span class="pb-arrow">›</span>
         </div>
 
         <div class="quick">
@@ -387,11 +449,80 @@
         </div>
         <div class="card menu">
           <div class="menu-row" onclick="go('report')"><span class="m-ico">📊</span><span class="m-label">健康报告</span><span class="m-arrow">›</span></div>
+          <div class="menu-row" onclick="go('period')"><span class="m-ico">🌸</span><span class="m-label">经期管理</span><span class="m-arrow">›</span></div>
           <div class="menu-row"><span class="m-ico">👤</span><span class="m-label">编辑资料</span><span class="m-arrow">›</span></div>
           <div class="menu-row"><span class="m-ico">🗑️</span><span class="m-label">清空数据</span><span class="m-arrow">›</span></div>
           <div class="menu-row last"><span class="m-ico">ℹ️</span><span class="m-label">关于</span><span class="m-arrow">›</span></div>
         </div>
         <div class="foot-tip">健康管家 v1.0.0 · 数据仅保存在本机</div>
+      </div>
+
+      <!-- ===== 经期 ===== -->
+      <div class="page" id="p-period">
+        <div class="rep-head">
+          <div class="row-between">
+            <span class="back" onclick="go('profile')">‹ 返回</span>
+            <span class="dim"></span>
+          </div>
+          <div class="rh-title" style="margin-top:6px;">经期追踪</div>
+          <div class="rh-sub">近6个月 · 已记录 2 次</div>
+        </div>
+
+        <div class="sc luteal">
+          <div class="sc-top">
+            <div>
+              <div class="sc-phase">黄体期</div>
+              <div class="sc-sub">距下次经期 26 天 · 周期 28 天</div>
+            </div>
+            <div>
+              <div class="sc-cycle-num">3</div>
+              <div class="sc-cycle-l">周期第3天</div>
+            </div>
+          </div>
+          <div class="sc-foot">平均周期 28 天 · 平均经期 6 天</div>
+        </div>
+
+        <div class="pred">
+          <div class="card pred-item"><div class="pi-ico pi-next">🌸</div><div class="pi-val">2026/09/22</div><div class="pi-l">预计下次经期</div></div>
+          <div class="card pred-item"><div class="pi-ico pi-ovu">🥚</div><div class="pi-val">2026/09/08</div><div class="pi-l">预计排卵日</div></div>
+          <div class="card pred-item"><div class="pi-ico pi-fert">💞</div><div class="pi-val">09/03</div><div class="pi-l">易孕期起 09/09</div></div>
+        </div>
+
+        <div class="card cal-card">
+          <div class="cal-head">
+            <span class="cal-nav">‹</span>
+            <span class="cal-title">2026年8月</span>
+            <span class="cal-nav">›</span>
+          </div>
+          <div class="cal-week">
+            <span class="cw">日</span><span class="cw">一</span><span class="cw">二</span><span class="cw">三</span><span class="cw">四</span><span class="cw">五</span><span class="cw">六</span>
+          </div>
+          <div class="cal-grid" id="calGrid"></div>
+          <div class="cal-legend">
+            <div class="lg"><span class="lg-d lg-period"></span>经期</div>
+            <div class="lg"><span class="lg-d lg-fertile"></span>易孕期</div>
+            <div class="lg"><span class="lg-d lg-ovu"></span>排卵日</div>
+            <div class="lg"><span class="lg-d lg-today"></span>今天</div>
+          </div>
+        </div>
+
+        <span class="section-title block-title">历史记录</span>
+        <div class="card hist-item">
+          <div class="hi-main">
+            <div class="hi-date">2026/07/28 ~ 2026/08/02</div>
+            <div class="hi-meta">经期 6天 · 周期 28天 · 正常</div>
+            <div class="hi-meta">症状：情绪波动、疲劳</div>
+          </div>
+          <div class="hi-del">删除</div>
+        </div>
+        <div class="card hist-item">
+          <div class="hi-main">
+            <div class="hi-date">2026/06/30 ~ 2026/07/05</div>
+            <div class="hi-meta">经期 6天 · 周期 28天 · 正常</div>
+            <div class="hi-meta">症状：痛经、腰酸</div>
+          </div>
+          <div class="hi-del">删除</div>
+        </div>
       </div>
 
       <!-- ===== 报告 ===== -->
@@ -456,7 +587,7 @@
   </div>
 
 <script>
-  const titles = { home:'健康管家', record:'健康记录', exercise:'运动记录', medication:'用药提醒', profile:'我的', report:'健康报告' };
+  const titles = { home:'健康管家', record:'健康记录', exercise:'运动记录', medication:'用药提醒', profile:'我的', report:'健康报告', period:'经期追踪' };
   function go(p){
     document.querySelectorAll('.page').forEach(el=>el.classList.remove('on'));
     document.getElementById('p-'+p).classList.add('on');
@@ -464,8 +595,33 @@
     document.getElementById('scroll').scrollTop = 0;
     document.querySelectorAll('.tabbar .t').forEach(t=>t.classList.toggle('on', t.dataset.p===p));
     const tb = document.getElementById('tabbar');
-    tb.style.display = (p==='report') ? 'none' : 'flex';
+    tb.style.display = (p==='report' || p==='period') ? 'none' : 'flex';
   }
+  // 渲染 2026年8月 经期日历
+  (function(){
+    const grid = document.getElementById('calGrid');
+    if(!grid) return;
+    // 2026-08-01 是周六(6)
+    const firstDay = 6;
+    const days = 31;
+    const todayD = 27;
+    const periodDays = {1:0,2:0}; // 本月无经期（上次 7/28-8/02 跨月，标记1-2号）
+    // 实际上次经期 7/28~8/02，所以8月1、2号为经期
+    const pSet = {1:true,2:true};
+    // 易孕期假设 9/3-9/09，本月无；排卵 9/08 本月无
+    let html = '';
+    for(let i=0;i<firstDay;i++) html += '<div class="cc"></div>';
+    for(let d=1; d<=days; d++){
+      let cls='cc', dot='';
+      if(d===todayD) cls+=' today';
+      let dotCls='';
+      if(pSet[d]) dotCls='on-period';
+      if(dotCls) dot='<div class="cc-dot '+dotCls+'">'+d+'</div>';
+      else dot='<div class="cc-dot">'+d+'</div>';
+      html += '<div class="'+cls+'">'+dot+'</div>';
+    }
+    grid.innerHTML = html;
+  })();
   document.querySelectorAll('.tabbar .t').forEach(t => t.addEventListener('click', ()=>go(t.dataset.p)));
   // 简单交互：用药打卡、记录删除、指标 Tab 切换
   document.querySelectorAll('#p-medication .med').forEach(m=>{

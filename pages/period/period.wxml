@@ -1,0 +1,88 @@
+<!-- pages/period/period.wxml -->
+<view class="pd-page">
+
+  <!-- 状态卡 -->
+  <view class="status-card {{status.phaseKey}}" wx:if="{{status.hasData}}">
+    <view class="sc-top">
+      <view class="col">
+        <view class="sc-phase">{{status.phase}}</view>
+        <view class="sc-sub" wx:if="{{status.inPeriod}}">经期第 {{status.cycleDay}} 天 · 持续 {{status.periodLen}} 天</view>
+        <view class="sc-sub" wx:elif="{{status.nextCountdown !== null}}">
+          距下次经期 {{status.nextCountdown >= 0 ? status.nextCountdown + ' 天' : '已推迟 ' + (-status.nextCountdown) + ' 天'}}
+        </view>
+      </view>
+      <view class="sc-cycle">
+        <view class="sc-cycle-num">{{status.cycleDay}}</view>
+        <view class="sc-cycle-l">周期第{{status.cycleDay}}天</view>
+      </view>
+    </view>
+    <view class="sc-foot">平均周期 {{cycleLen}} 天</view>
+  </view>
+
+  <view class="card empty-state" wx:if="{{!status.hasData}}">
+    暂无经期记录\n点击右下角 + 记录首次经期
+  </view>
+
+  <!-- 预测信息 -->
+  <view class="pred" wx:if="{{status.hasData}}">
+    <view class="pred-item card">
+      <view class="pi-ico pd-ico-next">🌸</view>
+      <view class="pi-val">{{nextStart}}</view>
+      <view class="pi-l">预计下次经期</view>
+    </view>
+    <view class="pred-item card">
+      <view class="pi-ico pd-ico-ovu">🥚</view>
+      <view class="pi-val">{{ovulation}}</view>
+      <view class="pi-l">预计排卵日</view>
+    </view>
+    <view class="pred-item card">
+      <view class="pi-ico pd-ico-fert">💞</view>
+      <view class="pi-val">{{fertileStart}}</view>
+      <view class="pi-l">易孕期起 {{fertileEnd}}</view>
+    </view>
+  </view>
+
+  <!-- 日历 -->
+  <view class="card cal-card">
+    <view class="cal-head">
+      <view class="cal-nav" bindtap="prevMonth">‹</view>
+      <text class="cal-title">{{calTitle}}</text>
+      <view class="cal-nav" bindtap="nextMonth">›</view>
+    </view>
+    <view class="cal-week">
+      <text wx:for="{{weekday}}" wx:key="*this" class="cw">{{item}}</text>
+    </view>
+    <view class="cal-grid">
+      <view class="cc {{!item.inMonth ? 'blank' : ''}} {{item.isToday ? 'today' : ''}}" wx:for="{{calCells}}" wx:key="date">
+        <view class="cc-dot {{item.isPeriod ? 'on-period' : ''}} {{item.isFertile ? 'on-fertile' : ''}} {{item.isOvulation ? 'on-ovu' : ''}}" wx:if="{{item.inMonth}}">
+          <text class="cc-day">{{item.day}}</text>
+        </view>
+      </view>
+    </view>
+    <view class="cal-legend">
+      <view class="lg"><view class="lg-d lg-period"></view>经期</view>
+      <view class="lg"><view class="lg-d lg-fertile"></view>易孕期</view>
+      <view class="lg"><view class="lg-d lg-ovu"></view>排卵日</view>
+      <view class="lg"><view class="lg-d lg-today"></view>今天</view>
+    </view>
+  </view>
+
+  <!-- 历史 -->
+  <text class="section-title block-title">历史记录</text>
+  <view class="hist">
+    <view class="empty-state" wx:if="{{!history.length}}">暂无历史记录</view>
+    <view class="card hist-item" wx:for="{{history}}" wx:key="id" data-id="{{item.id}}" bindtap="editHistory">
+      <view class="hi-main">
+        <view class="hi-date">{{item.startDate}} ~ {{item.endDate}}</view>
+        <view class="hi-meta">
+          经期 {{item.lenText}} · 周期 {{item.cycleText}} · {{item.flow}}
+        </view>
+        <view class="hi-sym" wx:if="{{item.symptoms && item.symptoms !== '无'}}">症状：{{item.symptoms}}</view>
+        <view class="hi-note" wx:if="{{item.note}}">备注：{{item.note}}</view>
+      </view>
+      <view class="hi-del" data-id="{{item.id}}" catchtap="del">删除</view>
+    </view>
+  </view>
+
+  <view class="fab" bindtap="goAdd">+</view>
+</view>

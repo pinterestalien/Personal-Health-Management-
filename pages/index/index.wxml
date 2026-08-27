@@ -33,6 +33,18 @@
     </view>
   </view>
 
+  <!-- 经期状态 -->
+  <view class="period-banner {{periodStatus.phaseKey}}" wx:if="{{periodStatus && periodStatus.hasData}}" bindtap="goPeriod">
+    <view class="pb-ico">🌸</view>
+    <view class="flex1">
+      <view class="pb-phase">{{periodStatus.phase}}</view>
+      <view class="pb-sub" wx:if="{{periodStatus.inPeriod}}">经期第 {{periodStatus.cycleDay}} 天 · 持续 {{periodStatus.periodLen}} 天</view>
+      <view class="pb-sub" wx:elif="{{periodStatus.nextCountdown >= 0}}">距下次经期 {{periodStatus.nextCountdown}} 天 · 周期 {{periodStatus.cycleLen}} 天</view>
+      <view class="pb-sub" wx:else>已推迟 {{-periodStatus.nextCountdown}} 天 · 点击查看</view>
+    </view>
+    <view class="pb-arrow">›</view>
+  </view>
+
   <!-- 快捷记录 -->
   <view class="quick">
     <view class="quick-item" data-type="steps" bindtap="goRecord"><view class="qi-ico">🏃</view><view class="qi-t">记步数</view></view>

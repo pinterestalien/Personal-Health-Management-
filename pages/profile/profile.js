@@ -41,6 +41,7 @@ Page({
 
   goEdit() { wx.navigateTo({ url: '/pages/profile-edit/profile-edit' }); },
   goReport() { wx.navigateTo({ url: '/pages/report/report' }); },
+  goPeriod() { wx.navigateTo({ url: '/pages/period/period' }); },
 
   clearData() {
     wx.showModal({

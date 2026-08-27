@@ -23,7 +23,8 @@ Page({
     weightTrend: [],
     weightMax: 100,
     weightMin: 50,
-    meds: []
+    meds: [],
+    periodStatus: null
   },
 
   onLoad() {
@@ -79,6 +80,8 @@ Page({
       taken: store.isMedTaken(m.id)
     })).slice(0, 4);
 
+    const periodStatus = store.cycleStatus();
+
     this.setData({
       greeting, dateText, profile,
       steps, stepGoal, stepPct, ringDeg,
@@ -86,7 +89,7 @@ Page({
       sleep, sleepGoal,
       exCal: ex.calories, exDuration: ex.duration,
       vitals, weightTrend: wt, weightMax: wmax, weightMin: wmin,
-      meds
+      meds, periodStatus
     });
   },
 
@@ -143,6 +146,7 @@ Page({
 
   goExercise() { wx.switchTab({ url: '/pages/exercise/exercise' }); },
   goMed() { wx.switchTab({ url: '/pages/medication/medication' }); },
+  goPeriod() { wx.navigateTo({ url: '/pages/period/period' }); },
   goReport() { wx.navigateTo({ url: '/pages/report/report' }); },
 
   tapMed(e) {

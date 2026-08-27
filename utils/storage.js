@@ -8,8 +8,15 @@ const K = {
   MEDS: 'medications',
   MEDLOG: 'med_log',
   PROFILE: 'profile',
+  PERIOD: 'periods',
   SEEDED: 'seeded_v1'
 };
+
+/* ---------- 经期常量 ---------- */
+const FLOW = { light: '量少', normal: '正常', heavy: '量多' };
+const SYMPTOMS = ['痛经', '腰酸', '腹胀', '情绪波动', '乳房胀痛', '疲劳', '头痛', '痤疮', '失眠', '食欲变化'];
+const DEFAULT_CYCLE = 28;   // 默认周期天数
+const DEFAULT_PERIOD = 5;   // 默认行经期天数
 
 function get(key, fallback) {
   try {
@@ -252,15 +259,173 @@ function seedIfEmpty() {
   addMed({ name: '维生素D', dosage: '1粒', time: '08:00', frequency: '每日一次', note: '餐后服用' });
   addMed({ name: '鱼油', dosage: '2粒', time: '20:00', frequency: '每日一次', note: '随餐' });
 
+  // 经期（近三个月）
+  const today = new Date();
+  const d1 = new Date(today); d1.setDate(today.getDate() - 58);
+  const d2 = new Date(today); d2.setDate(today.getDate() - 30);
+  const e1 = new Date(d1); e1.setDate(d1.getDate() + 5);
+  const e2 = new Date(d2); e2.setDate(d2.getDate() + 6);
+  addPeriod({ startDate: util.formatDate(d1), endDate: util.formatDate(e1), flow: 'normal', symptoms: ['痛经', '腰酸'], note: '第一天不适' });
+  addPeriod({ startDate: util.formatDate(d2), endDate: util.formatDate(e2), flow: 'normal', symptoms: ['情绪波动', '疲劳'], note: '' });
+
   set(K.SEEDED, true);
+}
+
+/* ---------- 经期数据与周期计算 ---------- */
+
+/** 日期加减天数，返回 YYYY-MM-DD */
+function addDays(dateStr, days) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + days);
+  return util.formatDate(d);
+}
+
+/** 两个日期相差天数（b - a，可为负） */
+function dayDiff(a, b) {
+  const da = new Date(a + 'T00:00:00').getTime();
+  const db = new Date(b + 'T00:00:00').getTime();
+  return Math.round((db - da) / 86400000);
+}
+
+function getPeriods() {
+  return get(K.PERIOD, []).sort((a, b) => a.startDate.localeCompare(b.startDate));
+}
+
+function addPeriod(p) {
+  const all = get(K.PERIOD, []);
+  const item = Object.assign({ id: util.uid(), ts: util.now(), endDate: '', flow: 'normal', symptoms: [], note: '' }, p);
+  all.push(item);
+  set(K.PERIOD, all);
+  return item;
+}
+
+function updatePeriod(id, patch) {
+  const all = get(K.PERIOD, []).map(m => m.id === id ? Object.assign({}, m, patch) : m);
+  set(K.PERIOD, all);
+}
+
+function deletePeriod(id) {
+  set(K.PERIOD, get(K.PERIOD, []).filter(m => m.id !== id));
+}
+
+/** 最近一次经期（按开始日期） */
+function lastPeriod() {
+  const list = getPeriods();
+  return list.length ? list[list.length - 1] : null;
+}
+
+/** 平均周期长度（天）；不足两次记录时返回默认值 */
+function avgCycleLength() {
+  const list = getPeriods();
+  if (list.length < 2) return DEFAULT_CYCLE;
+  const diffs = [];
+  for (let i = 1; i < list.length; i++) {
+    diffs.push(dayDiff(list[i - 1].startDate, list[i].startDate));
+  }
+  return Math.round(diffs.reduce((s, v) => s + v, 0) / diffs.length);
+}
+
+/** 预测下一次经期开始日期 */
+function predictedNextStart() {
+  const last = lastPeriod();
+  if (!last) return null;
+  return addDays(last.startDate, avgCycleLength());
+}
+
+/** 预测排卵日（下次经期前 14 天） */
+function predictedOvulation() {
+  const next = predictedNextStart();
+  return next ? addDays(next, -14) : null;
+}
+
+/** 易孕窗口：排卵前 5 天 ~ 排卵后 1 天 */
+function fertileWindow() {
+  const ovu = predictedOvulation();
+  if (!ovu) return null;
+  return { start: addDays(ovu, -5), end: addDays(ovu, 1), ovulation: ovu };
+}
+
+/**
+ * 当前经期状态
+ * @param {string} today YYYY-MM-DD
+ * @returns phase/cycleDay/nextStart/ovulation/periodLen/inPeriod
+ */
+function cycleStatus(today) {
+  today = today || util.formatDate();
+  const last = lastPeriod();
+  const cycle = avgCycleLength();
+  const next = last ? addDays(last.startDate, cycle) : null;
+  const ovu = next ? addDays(next, -14) : null;
+  const fertile = ovu ? { start: addDays(ovu, -5), end: addDays(ovu, 1) } : null;
+
+  let phase = '安全期';
+  let phaseKey = 'safe';
+  let cycleDay = 0;
+  let inPeriod = false;
+  let periodLen = 0;
+
+  if (last) {
+    const periodEnd = last.endDate || addDays(last.startDate, DEFAULT_PERIOD - 1);
+    periodLen = dayDiff(last.startDate, periodEnd) + 1;
+    cycleDay = dayDiff(last.startDate, today) + 1;
+
+    if (today < last.startDate) {
+      phase = '预计经期'; phaseKey = 'safe';
+    } else if (today <= periodEnd) {
+      phase = '经期中'; phaseKey = 'period'; inPeriod = true;
+    } else if (fertile && today >= fertile.start && today <= fertile.end) {
+      phase = ovu && today === ovu ? '排卵日' : '易孕期';
+      phaseKey = 'fertile';
+    } else {
+      const ovuDayOfCycle = cycle - 14;
+      if (cycleDay < ovuDayOfCycle - 5) { phase = '卵泡期'; phaseKey = 'safe'; }
+      else { phase = '黄体期'; phaseKey = 'luteal'; }
+    }
+  }
+
+  // 距下次经期天数（已过则提示已推迟）
+  let nextCountdown = next ? dayDiff(today, next) : null;
+
+  return {
+    hasData: !!last,
+    phase, phaseKey,
+    cycleDay, inPeriod, periodLen,
+    cycleLen: cycle,
+    nextStart: next,
+    nextCountdown,
+    ovulation: ovu,
+    fertile
+  };
+}
+
+/** 获取某月日历的经期标记（返回该月属于经期的日期集合） */
+function periodDaysInRange(from, to) {
+  const all = getPeriods();
+  const set = {};
+  all.forEach(p => {
+    if (!p.startDate) return;
+    const end = p.endDate || addDays(p.startDate, DEFAULT_PERIOD - 1);
+    let cur = p.startDate;
+    let guard = 0;
+    while (cur <= end && cur <= to && cur >= from && guard < 30) {
+      set[cur] = true;
+      cur = addDays(cur, 1);
+      guard++;
+    }
+  });
+  return set;
 }
 
 module.exports = {
   K, METRICS, EXERCISE_TYPES,
+  FLOW, SYMPTOMS, DEFAULT_CYCLE, DEFAULT_PERIOD,
   getRecords, addRecord, deleteRecord, latestRecord, recentRecords, trendByDay,
   getExercises, addExercise, deleteExercise,
   getMeds, addMed, updateMed, deleteMed,
   getMedLog, toggleMedTaken, isMedTaken,
+  getPeriods, addPeriod, updatePeriod, deletePeriod, lastPeriod,
+  avgCycleLength, predictedNextStart, predictedOvulation, fertileWindow,
+  cycleStatus, periodDaysInRange, addDays, dayDiff,
   getProfile, setProfile, getGoals,
   todayExercise, todayWater, todaySteps,
   seedIfEmpty

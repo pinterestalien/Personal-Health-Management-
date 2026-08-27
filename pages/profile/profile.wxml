@@ -75,6 +75,11 @@
       <text class="m-label flex1">健康报告</text>
       <text class="m-arrow">›</text>
     </view>
+    <view class="menu-row" bindtap="goPeriod">
+      <text class="m-ico">🌸</text>
+      <text class="m-label flex1">经期管理</text>
+      <text class="m-arrow">›</text>
+    </view>
     <view class="menu-row" bindtap="goEdit">
       <text class="m-ico">👤</text>
       <text class="m-label flex1">编辑资料</text>
