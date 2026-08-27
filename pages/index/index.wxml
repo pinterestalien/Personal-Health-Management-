@@ -49,7 +49,7 @@
   <view class="quick">
     <view class="quick-item" data-type="steps" bindtap="goRecord"><view class="qi-ico">🏃</view><view class="qi-t">记步数</view></view>
     <view class="quick-item" data-type="water" bindtap="goRecord"><view class="qi-ico">💧</view><view class="qi-t">记饮水</view></view>
-    <view class="quick-item" data-type="weight" bindtap="goRecord"><view class="qi-ico">⚖️</view><view class="qi-t">记体重</view></view>
+    <view class="quick-item" data-type="weight" bindtap="goWeight"><view class="qi-ico">⚖️</view><view class="qi-t">记体重</view></view>
     <view class="quick-item" data-type="bloodPressure" bindtap="goRecord"><view class="qi-ico">❤️</view><view class="qi-t">记血压</view></view>
     <view class="quick-item" data-type="heartRate" bindtap="goRecord"><view class="qi-ico">💓</view><view class="qi-t">记心率</view></view>
     <view class="quick-item" data-type="sleep" bindtap="goRecord"><view class="qi-ico">😴</view><view class="qi-t">记睡眠</view></view>

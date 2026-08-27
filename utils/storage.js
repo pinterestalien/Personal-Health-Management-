@@ -416,6 +416,109 @@ function periodDaysInRange(from, to) {
   return set;
 }
 
+/* ---------- 体重管理与饮食推荐 ---------- */
+
+const MEAL_PLANS = {
+  light: {
+    breakfast: [
+      { name: '全麦吐司配水煮蛋', cal: 320, items: '全麦吐司1片, 水煮蛋1个, 无糖黑咖啡1杯' },
+      { name: '燕麦粥配草莓', cal: 280, items: '即食燕麦40g, 草莓5颗, 脱脂牛奶150ml' }
+    ],
+    lunch: [
+      { name: '鸡胸肉沙拉碗', cal: 450, items: '煎鸡胸肉100g, 混合蔬菜150g, 油醋汁' },
+      { name: '糙米饭配清蒸鱼', cal: 520, items: '糙米饭80g, 清蒸鲈鱼100g, 西兰花200g' }
+    ],
+    dinner: [
+      { name: '豆腐蔬菜汤', cal: 200, items: '嫩豆腐100g, 菠菜100g, 虾皮少许' },
+      { name: '水煮虾与凉拌黄瓜', cal: 250, items: '基围虾100g, 黄瓜150g, 蒜末醋汁' }
+    ]
+  },
+  normal: {
+    breakfast: [
+      { name: '牛奶燕麦谷物碗', cal: 450, items: '燕麦50g, 牛奶250ml, 坚果15g, 蓝莓20g' },
+      { name: '鸡蛋三明治', cal: 500, items: '全麦面包2片, 鸡蛋1个, 生菜番茄, 低脂沙拉酱' }
+    ],
+    lunch: [
+      { name: '黑椒牛肉饭', cal: 650, items: '糙米饭100g, 黑椒牛柳120g, 时令蔬菜200g' },
+      { name: '番茄意面', cal: 600, items: '全麦意面80g, 番茄酱100g, 肉末50g, 罗勒' }
+    ],
+    dinner: [
+      { name: '三文鱼藜麦碗', cal: 550, items: '烤三文鱼100g, 藜麦50g, 烤蔬菜200g' },
+      { name: '蒜蓉西兰花配鸡胸', cal: 480, items: '西兰花200g, 煎鸡胸80g, 蒜蓉, 米饭80g' }
+    ]
+  },
+  heavy: {
+    breakfast: [
+      { name: '高蛋白能量碗', cal: 700, items: '燕麦60g, 牛奶300ml, 鸡蛋2个, 香蕉1根, 花生酱20g' },
+      { name: '巨无霸三明治', cal: 750, items: '全麦面包3片, 鸡蛋2个, 鸡胸肉50g, 奶酪, 生菜番茄' }
+    ],
+    lunch: [
+      { name: '双层牛肉堡', cal: 900, items: '全麦汉堡1个, 牛肉饼150g, 奶酪, 生菜番茄, 烤红薯1个' },
+      { name: '大份铁板牛肉饭', cal: 850, items: '米饭200g, 铁板牛肉150g, 洋葱青椒, 味增汤' }
+    ],
+    dinner: [
+      { name: '烤全鸡配土豆', cal: 750, items: '烤鸡腿2个, 烤土豆150g, 烤蔬菜200g' },
+      { name: '三文鱼排配烩饭', cal: 700, items: '三文鱼排100g, 蘑菇烩饭150g, 芦笋' }
+    ]
+  }
+};
+
+function calcBMR(profile) {
+  const { gender, age, height } = profile;
+  const latestW = latestRecord('weight');
+  const weight = latestW ? latestW.value : (profile.goals ? profile.goals.weight : 65);
+  if (!weight || !height || !age) return 1500;
+  if (gender === '女') {
+    return Math.round(10 * weight + 6.25 * height - 5 * age - 161);
+  } else {
+    return Math.round(10 * weight + 6.25 * height - 5 * age + 5);
+  }
+}
+
+function recommendCalories(profile) {
+  const bmr = calcBMR(profile);
+  const tdee = Math.round(bmr * 1.375);
+  const recent30 = trendByDay('weight', 30).filter(d => d.value !== null);
+  let trend = 'stable';
+  if (recent30.length >= 7) {
+    const half = Math.floor(recent30.length / 2);
+    const firstAvg = recent30.slice(0, half).reduce((s, d) => s + d.value, 0) / half;
+    const lastAvg = recent30.slice(half).reduce((s, d) => s + d.value, 0) / (recent30.length - half);
+    const diff = lastAvg - firstAvg;
+    if (diff > 0.2) trend = 'gain';
+    else if (diff < -0.2) trend = 'loss';
+  }
+
+  let target = tdee;
+  let level = 'normal';
+  if (trend === 'gain') {
+    target = tdee - 500;
+    level = 'light';
+  } else if (trend === 'loss') {
+    target = tdee + 200;
+    level = 'heavy';
+  }
+
+  const status = cycleStatus();
+  if (status.hasData && (status.inPeriod || status.phaseKey === 'luteal')) {
+    target += 200;
+    if (level === 'light') level = 'normal';
+  }
+
+  target = Math.max(1200, Math.min(3200, target));
+  return { bmr, tdee, target, level, trend };
+}
+
+function getMealPlan(level) {
+  const plan = MEAL_PLANS[level] || MEAL_PLANS.normal;
+  const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
+  return {
+    breakfast: pick(plan.breakfast),
+    lunch: pick(plan.lunch),
+    dinner: pick(plan.dinner)
+  };
+}
+
 module.exports = {
   K, METRICS, EXERCISE_TYPES,
   FLOW, SYMPTOMS, DEFAULT_CYCLE, DEFAULT_PERIOD,
@@ -426,6 +529,7 @@ module.exports = {
   getPeriods, addPeriod, updatePeriod, deletePeriod, lastPeriod,
   avgCycleLength, predictedNextStart, predictedOvulation, fertileWindow,
   cycleStatus, periodDaysInRange, addDays, dayDiff,
+  calcBMR, recommendCalories, getMealPlan, MEAL_PLANS,
   getProfile, setProfile, getGoals,
   todayExercise, todayWater, todaySteps,
   seedIfEmpty

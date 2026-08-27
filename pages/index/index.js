@@ -146,6 +146,7 @@ Page({
 
   goExercise() { wx.switchTab({ url: '/pages/exercise/exercise' }); },
   goMed() { wx.switchTab({ url: '/pages/medication/medication' }); },
+  goWeight() { wx.navigateTo({ url: '/pages/weight/weight' }); },
   goPeriod() { wx.navigateTo({ url: '/pages/period/period' }); },
   goReport() { wx.navigateTo({ url: '/pages/report/report' }); },
 

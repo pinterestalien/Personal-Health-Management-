@@ -11,7 +11,8 @@
     "pages/profile-edit/profile-edit",
     "pages/report/report",
     "pages/period/period",
-    "pages/period-add/period-add"
+    "pages/period-add/period-add",
+    "pages/weight/weight"
   ],
   "window": {
     "navigationBarBackgroundColor": "#0E7C66",

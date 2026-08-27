@@ -1,0 +1,136 @@
+<!-- pages/weight/weight.wxml -->
+<view class="w-page">
+
+  <!-- 体重摘要 -->
+  <view class="summary">
+    <view class="row-between" style="align-items:flex-end;">
+      <view>
+        <view class="sum-label">当前体重</view>
+        <view class="sum-num">{{currentWeight ? currentWeight : '—'}}<text class="sum-unit" wx:if="{{currentWeight}}">kg</text></view>
+      </view>
+      <view class="target-info" wx:if="{{currentWeight}}">
+        <view class="ti-diff {{diff > 0 ? 'up' : 'down'}}">
+          {{diff > 0 ? '+' : ''}}{{diff}} kg
+        </view>
+        <view class="ti-label">距目标 {{targetWeight}}kg</view>
+      </view>
+    </view>
+    <view class="sum-actions">
+      <view class="action-btn" bindtap="goAddWeight">快速记体重</view>
+    </view>
+  </view>
+
+  <!-- 热量推荐卡 -->
+  <view class="calorie-card">
+    <view class="cc-header">
+      <view class="cc-badge {{recommend.level}}">
+        {{recommend.level === 'light' ? '减脂期' : recommend.level === 'heavy' ? '增肌/恢复期' : '维持期'}}
+      </view>
+      <view class="cc-trend">{{recommend.trend === 'gain' ? '📈 近期上升' : recommend.trend === 'loss' ? '📉 近期下降' : '➖ 近期稳定'}}</view>
+    </view>
+
+    <view class="cc-main">
+      <view class="cc-item">
+        <view class="ci-num">{{recommend.target}}</view>
+        <view class="ci-unit">kcal</view>
+        <view class="ci-label">每日目标摄入</view>
+      </view>
+      <view class="cc-item">
+        <view class="ci-num">{{recommend.tdee}}</view>
+        <view class="ci-unit">kcal</view>
+        <view class="ci-label">每日消耗 (TDEE)</view>
+      </view>
+
+      <view class="cc-item">
+        <view class="ci-num">{{recommend.bmr}}</view>
+        <view class="ci-unit">kcal</view>
+        <view class="ci-label">基础代谢 (BMR)</view>
+      </view>
+      <view class="cc-item">
+        <view class="ci-num">{{recommend.target - recommend.tdee}}</view>
+        <view class="ci-unit">kcal</view>
+        <view class="ci-label">{{recommend.target < recommend.tdee ? '建议缺口' : '建议盈余'}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 今日食谱 -->
+  <view class="section-header">
+    <text class="section-title">今日三餐推荐</text>
+    <view class="refresh-btn" bindtap="refreshPlan">🔄 换一批</view>
+  </view>
+
+  <view class="meal-list">
+    <view class="meal-card card">
+      <view class="meal-head">
+        <view class="meal-time">🌅 早餐</view>
+        <view class="meal-cal">{{mealPlan.breakfast.cal}} kcal</view>
+      </view>
+      <view class="meal-name">{{mealPlan.breakfast.name}}</view>
+      <view class="meal-items">{{mealPlan.breakfast.items}}</view>
+      <view class="meal-actions">
+        <view class="meal-btn" data-type="weight" bindtap="goRecord">记录食物</view>
+      </view>
+    </view>
+
+    <view class="meal-card card">
+      <view class="meal-head">
+        <view class="meal-time">☀️ 午餐</view>
+        <view class="meal-cal">{{mealPlan.lunch.cal}} kcal</view>
+      </view>
+      <view class="meal-name">{{mealPlan.lunch.name}}</view>
+      <view class="meal-items">{{mealPlan.lunch.items}}</view>
+      <view class="meal-actions">
+        <view class="meal-btn" data-type="weight" bindtap="goRecord">记录食物</view>
+      </view>
+    </view>
+
+    <view class="meal-card card">
+      <view class="meal-head">
+        <view class="meal-time">🌙 晚餐</view>
+        <view class="meal-cal">{{mealPlan.dinner.cal}} kcal</view>
+      </view>
+      <view class="meal-name">{{mealPlan.dinner.name}}</view>
+      <view class="meal-items">{{mealPlan.dinner.items}}</view>
+      <view class="meal-actions">
+        <view class="meal-btn" data-type="weight" bindtap="goRecord">记录食物</view>
+      </view>
+    </view>
+
+    <view class="meal-total">
+      预计总热量：{{mealPlan.breakfast.cal + mealPlan.lunch.cal + mealPlan.dinner.cal}} kcal
+      <text class="total-gap" wx:if="{{recommend.target}}"> (目标 {{recommend.target}} kcal)</text>
+    </view>
+  </view>
+
+  <!-- 体重趋势 -->
+  <view class="section-header">
+    <text class="section-title">体重变化</text>
+    <text class="dim" style="font-size:22rpx;">最近7天</text>
+  </view>
+
+  <view class="card trend-card">
+    <view class="trend-chart">
+      <view class="tc-col" wx:for="{{weightTrend}}" wx:key="date">
+        <view class="tc-track">
+          <view class="tc-bar" style="height:{{item.value ? (item.value - wMin)/(wMax - wMin)*100 : 0}}%"></view>
+        </view>
+        <view class="tc-val" wx:if="{{item.value}}">{{item.value}}</view>
+        <view class="tc-label">{{item.date}}</view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 个性化建议 -->
+  <view class="section-header">
+    <text class="section-title">智能建议</text>
+  </view>
+  <view class="tip-list">
+    <view class="tip-item card" wx:for="{{tips}}" wx:key="text">
+      <view class="tip-ico">{{item.icon}}</view>
+      <view class="tip-text flex1">{{item.text}}</view>
+    </view>
+  </view>
+
+  <view class="bottom-space"></view>
+</view>
