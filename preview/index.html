@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>健康管家 · 预览</title>
+<style>
+  :root{
+    --c-bg:#F2F5F4; --c-surface:#fff; --c-surface-2:#F7FAF9;
+    --c-text:#14201D; --c-text-2:#5C6E69; --c-text-3:#93A39E; --c-line:#E6ECEA;
+    --c-primary:#0E7C66; --c-primary-soft:#E6F4F0; --c-accent:#F5A623;
+    --c-warn:#E8604D; --c-good:#2EA37A; --c-mid:#E9A23B; --c-bad:#D9534F;
+    --radius:20px; --radius-sm:12px;
+    --shadow:0 6px 24px rgba(20,32,29,.06); --shadow-soft:0 4px 16px rgba(20,32,29,.04);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  body{
+    font-family:-apple-system,"PingFang SC","Helvetica Neue",sans-serif;
+    background:linear-gradient(135deg,#DCE7E2 0%,#e8efed 100%);
+    min-height:100vh; display:flex; justify-content:center; align-items:flex-start;
+    padding:32px 12px; color:var(--c-text); font-size:14px; line-height:1.55;
+  }
+  .phone{
+    width:390px; height:844px; background:var(--c-bg); border-radius:48px;
+    box-shadow:0 30px 80px rgba(14,124,102,.28), 0 0 0 12px #1c1c1e, 0 0 0 13px #333;
+    overflow:hidden; position:relative; display:flex; flex-direction:column;
+  }
+  .statusbar{
+    height:44px; display:flex; align-items:center; justify-content:space-between;
+    padding:0 24px; font-size:14px; font-weight:600; color:#fff;
+    background:var(--c-primary); flex-shrink:0;
+  }
+  .statusbar .ic{display:flex; gap:6px; align-items:center;}
+  .nav{
+    height:44px; display:flex; align-items:center; justify-content:center;
+    background:var(--c-primary); color:#fff; font-size:17px; font-weight:600;
+    flex-shrink:0; letter-spacing:1px;
+  }
+  .scroll{ flex:1; overflow-y:auto; padding:0 14px 90px; }
+  .scroll::-webkit-scrollbar{display:none;}
+  .tabbar{
+    position:absolute; bottom:0; left:0; right:0; height:68px;
+    background:#fff; border-top:1px solid var(--c-line);
+    display:flex; padding-bottom:10px; box-shadow:0 -4px 16px rgba(0,0,0,.04);
+  }
+  .tabbar .t{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:4px; font-size:10px; color:#8A9B98; cursor:pointer; transition:color .15s; }
+  .tabbar .t.on{ color:var(--c-primary); }
+  .tabbar .t .dot{ width:22px; height:22px; font-size:18px; display:flex; align-items:center; justify-content:center; }
+
+  .page{ display:none; }
+  .page.on{ display:block; animation:fade .25s ease; }
+  @keyframes fade{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+
+  .card{ background:var(--c-surface); border-radius:var(--radius); box-shadow:var(--shadow-soft); padding:14px; }
+  .section-title{ font-size:15px; font-weight:600; }
+  .row-between{ display:flex; align-items:center; justify-content:space-between; }
+  .more{ font-size:12px; color:var(--c-primary); cursor:pointer; }
+  .dim{ font-size:11px; color:var(--c-text-3); }
+  .tag{ display:inline-flex; align-items:center; font-size:10px; padding:3px 8px; border-radius:999px; background:var(--c-primary-soft); color:var(--c-primary); }
+  .tag-good{background:#E6F4EE;color:var(--c-good);} .tag-mid{background:#FBF0DC;color:var(--c-mid);} .tag-bad{background:#FBE9E7;color:var(--c-bad);}
+  .empty-state{ text-align:center; padding:30px 0; color:var(--c-text-3); font-size:12px; }
+
+  /* ===== Home ===== */
+  .hero{ background:linear-gradient(145deg,#0E7C66,#10997C); border-radius:20px; padding:18px 16px 16px;
+    margin-top:10px; color:#fff; box-shadow:0 12px 32px rgba(14,124,102,.28); }
+  .hero-top{ display:flex; align-items:center; justify-content:space-between; }
+  .hero-greet{ font-size:18px; font-weight:700; }
+  .hero-date{ font-size:12px; opacity:.85; margin-top:3px; }
+  .hero-ring{ width:84px; height:84px; border-radius:50%; display:flex; align-items:center; justify-content:center;
+    background:conic-gradient(rgba(255,255,255,.92) 288deg, rgba(255,255,255,.18) 0deg); }
+  .hero-ring-inner{ width:65px; height:65px; border-radius:50%; background:rgba(14,124,102,.92);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .ring-num{ font-size:20px; font-weight:700; }
+  .ring-label{ font-size:9px; opacity:.85; margin-top:2px; }
+  .hero-stats{ display:flex; margin-top:18px; gap:9px; }
+  .hero-stat{ flex:1; background:rgba(255,255,255,.12); border-radius:12px; padding:9px 10px; }
+  .hs-val{ font-size:17px; font-weight:700; }
+  .hs-unit{ font-size:10px; opacity:.85; margin-left:2px; }
+  .hs-label{ font-size:11px; opacity:.85; margin-top:2px; }
+  .hs-bar{ height:4px; background:rgba(255,255,255,.22); border-radius:999px; margin-top:6px; overflow:hidden; }
+  .hs-bar-fill{ height:100%; background:#fff; border-radius:999px; }
+
+  .quick{ display:flex; flex-wrap:wrap; margin:16px -4px; }
+  .quick-item{ width:25%; padding:4px; text-align:center; cursor:pointer; }
+  .qi-ico{ width:44px; height:44px; margin:0 auto; border-radius:12px; background:var(--c-surface);
+    display:flex; align-items:center; justify-content:center; font-size:20px; box-shadow:var(--shadow-soft); }
+  .qi-t{ font-size:10px; color:var(--c-text-2); margin-top:6px; }
+
+  .block{ margin-top:18px; }
+  .vitals{ display:flex; flex-wrap:wrap; gap:8px; }
+  .vital{ width:calc(50% - 4px); padding:12px; }
+  .v-row{ display:flex; align-items:center; justify-content:space-between; }
+  .v-label{ font-size:12px; color:var(--c-text-2); }
+  .v-value{ font-size:22px; font-weight:700; margin-top:6px; letter-spacing:-.5px; }
+  .v-unit{ font-size:11px; color:var(--c-text-3); margin-left:3px; font-weight:400; }
+  .v-sub{ font-size:10px; color:var(--c-text-3); margin-top:4px; }
+
+  .chart{ display:flex; align-items:flex-end; height:130px; gap:7px; padding-top:5px; }
+  .bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; height:100%; }
+  .bar-track{ flex:1; width:100%; display:flex; align-items:flex-end; justify-content:center; }
+  .bar{ width:60%; max-width:22px; background:linear-gradient(180deg,#1AA88A,#0E7C66); border-radius:5px 5px 2px 2px; min-height:3px; }
+  .bar-val{ font-size:9px; color:var(--c-text-2); margin-top:3px; }
+  .bar-label{ font-size:9px; color:var(--c-text-3); margin-top:2px; }
+
+  .med-row{ display:flex; align-items:center; padding:9px 0; gap:10px; cursor:pointer; }
+  .med-row + .med-row{ border-top:1px solid var(--c-line); }
+  .med-ico{ width:36px; height:36px; border-radius:9px; background:var(--c-primary-soft); display:flex; align-items:center; justify-content:center; font-size:17px; opacity:.5; }
+  .med-ico.taken{ opacity:1; background:#E6F4EE; }
+  .med-name{ font-size:14px; font-weight:600; }
+  .med-time{ font-size:11px; color:var(--c-text-3); margin-top:2px; }
+  .med-state{ font-size:12px; padding:5px 12px; border-radius:999px; background:#FBF0DC; color:var(--c-mid); }
+  .med-state.done{ background:#E6F4EE; color:var(--c-good); }
+
+  /* ===== Record ===== */
+  .tabs{ display:flex; gap:8px; margin-bottom:14px; overflow-x:auto; padding-bottom:2px; }
+  .tabs::-webkit-scrollbar{display:none;}
+  .tab{ display:inline-flex; align-items:center; gap:4px; padding:7px 13px; border-radius:999px;
+    background:var(--c-surface); color:var(--c-text-2); font-size:13px; box-shadow:var(--shadow-soft);
+    white-space:nowrap; cursor:pointer; }
+  .tab.on{ background:var(--c-primary); color:#fff; }
+  .rec{ display:flex; align-items:center; padding:13px; margin-bottom:8px; }
+  .rec-val{ font-size:20px; font-weight:700; letter-spacing:-.5px; }
+  .rec-unit{ font-size:11px; color:var(--c-text-3); margin-left:3px; font-weight:400; }
+  .rec-meta{ font-size:11px; color:var(--c-text-3); margin-top:3px; }
+  .rec-note{ font-size:12px; color:var(--c-text-2); margin-top:4px; }
+  .rec-del{ font-size:12px; color:var(--c-warn); padding:5px 10px; cursor:pointer; }
+
+  /* ===== Exercise ===== */
+  .summary{ display:flex; align-items:center; justify-content:space-around;
+    background:linear-gradient(145deg,#0E7C66,#10997C); border-radius:16px; padding:16px 10px; color:#fff;
+    box-shadow:0 12px 32px rgba(14,124,102,.26); }
+  .sum-item{ text-align:center; flex:1; }
+  .sum-num{ font-size:21px; font-weight:700; line-height:1.1; }
+  .sum-u{ font-size:10px; opacity:.85; margin-left:2px; }
+  .sum-label{ font-size:11px; opacity:.85; margin-top:4px; }
+  .sum-div{ width:1px; height:30px; background:rgba(255,255,255,.25); }
+  .filters{ display:flex; gap:7px; margin:14px 0; overflow-x:auto; }
+  .filters::-webkit-scrollbar{display:none;}
+  .filter{ display:inline-block; padding:6px 14px; border-radius:999px; background:var(--c-surface); color:var(--c-text-2); font-size:13px; box-shadow:var(--shadow-soft); white-space:nowrap; cursor:pointer; }
+  .filter.on{ background:var(--c-primary); color:#fff; }
+  .ex{ display:flex; align-items:center; padding:13px; margin-bottom:8px; gap:10px; }
+  .ex-ico{ width:42px; height:42px; border-radius:10px; flex-shrink:0; background:var(--c-primary-soft); color:var(--c-primary); display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; }
+  .ex-title{ font-size:14px; font-weight:600; }
+  .ex-meta{ font-size:11px; color:var(--c-text-3); margin-top:2px; }
+  .es{ font-size:13px; font-weight:600; }
+  .es-dot{ color:var(--c-text-3); margin:0 5px; }
+  .ex-del{ font-size:12px; color:var(--c-warn); padding:5px 8px; cursor:pointer; }
+
+  /* ===== Medication ===== */
+  .progress-card{ background:linear-gradient(145deg,#0E7C66,#10997C); border-radius:16px; padding:16px; color:#fff; box-shadow:0 12px 32px rgba(14,124,102,.26); }
+  .pc-title{ font-size:16px; font-weight:700; }
+  .pc-sub{ font-size:12px; opacity:.85; margin-top:3px; }
+  .pc-ring{ width:60px; height:60px; border-radius:50%; display:flex; align-items:center; justify-content:center; background:conic-gradient(#fff 100deg, rgba(255,255,255,.25) 0deg); }
+  .pc-ring-inner{ width:46px; height:46px; border-radius:50%; background:#0E7C66; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:700; }
+  .pc-pct{ font-size:10px; margin-left:1px; }
+  .med{ display:flex; align-items:center; padding:12px; margin-bottom:8px; gap:10px; }
+  .med-check{ width:26px; height:26px; border-radius:50%; flex-shrink:0; border:2px solid var(--c-line); display:flex; align-items:center; justify-content:center; cursor:pointer; }
+  .med-check.checked{ background:var(--c-good); border-color:var(--c-good); }
+  .check-mark{ color:#fff; font-size:15px; font-weight:700; }
+  .med-name{ font-size:14px; font-weight:600; }
+  .med-info{ font-size:12px; color:var(--c-text-2); margin-top:3px; }
+  .mc-del{ font-size:11px; color:var(--c-warn); cursor:pointer; }
+
+  /* ===== Profile ===== */
+  .user-card{ display:flex; align-items:center; gap:12px; background:linear-gradient(145deg,#0E7C66,#10997C); border-radius:16px; padding:16px; color:#fff; box-shadow:0 12px 32px rgba(14,124,102,.26); }
+  .avatar{ width:50px; height:50px; border-radius:50%; background:rgba(255,255,255,.22); display:flex; align-items:center; justify-content:center; font-size:22px; font-weight:700; }
+  .u-name{ font-size:18px; font-weight:700; }
+  .u-info{ font-size:12px; opacity:.85; margin-top:3px; }
+  .u-edit{ font-size:12px; padding:5px 12px; border:1px solid rgba(255,255,255,.6); border-radius:999px; cursor:pointer; }
+  .bmi-card{ margin-top:12px; }
+  .bmi-label{ font-size:13px; color:var(--c-text-2); }
+  .bmi-val{ font-size:24px; font-weight:700; margin-top:3px; }
+  .bmi-bar{ display:flex; gap:3px; margin-top:12px; height:7px; }
+  .bmi-seg{ flex:1; border-radius:2px; }
+  .seg-1{background:#F5C281;} .seg-2{background:var(--c-good);} .seg-3{background:var(--c-mid);} .seg-4{background:var(--c-bad);}
+  .bmi-legend{ display:flex; justify-content:space-between; margin-top:5px; font-size:9px; color:var(--c-text-3); }
+  .block-title{ display:block; margin:16px 2px 8px; }
+  .goal-row{ display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid var(--c-line); }
+  .goal-row.last{ border-bottom:none; }
+  .goal-l{ font-size:14px; color:var(--c-text-2); }
+  .goal-v{ font-size:15px; font-weight:600; }
+  .stats{ display:flex; gap:8px; }
+  .stat{ flex:1; text-align:center; padding:14px 6px; }
+  .stat-num{ font-size:22px; font-weight:700; color:var(--c-primary); }
+  .stat-l{ font-size:11px; color:var(--c-text-3); margin-top:3px; }
+  .menu{ margin-top:18px; padding:0 14px; }
+  .menu-row{ display:flex; align-items:center; gap:10px; padding:14px 0; border-bottom:1px solid var(--c-line); cursor:pointer; }
+  .menu-row.last{ border-bottom:none; }
+  .m-ico{ font-size:18px; }
+  .m-label{ font-size:15px; flex:1; }
+  .m-arrow{ font-size:18px; color:var(--c-text-3); }
+  .foot-tip{ text-align:center; font-size:11px; color:var(--c-text-3); margin-top:18px; }
+
+  /* ===== Report ===== */
+  .rep-head{ padding:4px 2px 14px; }
+  .rh-title{ font-size:20px; font-weight:700; }
+  .rh-sub{ font-size:12px; color:var(--c-text-3); margin-top:3px; }
+  .avg-grid{ display:flex; gap:8px; margin-bottom:12px; }
+  .avg{ flex:1; text-align:center; padding:13px 6px; }
+  .avg-num{ font-size:22px; font-weight:700; color:var(--c-primary); line-height:1; }
+  .avg-u{ font-size:10px; color:var(--c-text-3); margin-top:2px; }
+  .avg-l{ font-size:11px; color:var(--c-text-2); margin-top:5px; }
+  .ex-sum{ margin-bottom:12px; }
+  .ex-stats{ display:flex; align-items:center; margin-top:10px; }
+  .es-cell{ flex:1; text-align:center; }
+  .es-num{ font-size:20px; font-weight:700; }
+  .es-l{ font-size:11px; color:var(--c-text-3); margin-top:2px; }
+  .es-div{ width:1px; height:28px; background:var(--c-line); }
+  .chart-card{ margin-bottom:12px; }
+  .tip{ display:flex; align-items:flex-start; gap:9px; padding:12px; margin-bottom:8px; }
+  .tip-ico{ font-size:19px; }
+  .tip-text{ font-size:13px; line-height:1.6; flex:1; }
+  .back{ font-size:12px; color:var(--c-primary); cursor:pointer; }
+</style>
+</head>
+<body>
+  <div class="phone">
+    <div class="statusbar">
+      <span>9:41</span>
+      <span class="ic">📶 📡 🔋</span>
+    </div>
+    <div class="nav" id="nav">健康管家</div>
+
+    <div class="scroll" id="scroll">
+
+      <!-- ===== 首页 ===== -->
+      <div class="page on" id="p-home">
+        <div class="hero">
+          <div class="hero-top">
+            <div>
+              <div class="hero-greet">早上好，健康用户</div>
+              <div class="hero-date">2026/08/27</div>
+            </div>
+            <div class="hero-ring">
+              <div class="hero-ring-inner">
+                <div class="ring-num">6420</div>
+                <div class="ring-label">步/目标8000</div>
+              </div>
+            </div>
+          </div>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="hs-val">1100<span class="hs-unit">ml</span></div>
+              <div class="hs-label">饮水 55%</div>
+              <div class="hs-bar"><div class="hs-bar-fill" style="width:55%"></div></div>
+            </div>
+            <div class="hero-stat">
+              <div class="hs-val">7.2<span class="hs-unit">h</span></div>
+              <div class="hs-label">睡眠</div>
+            </div>
+            <div class="hero-stat">
+              <div class="hs-val">130<span class="hs-unit">kcal</span></div>
+              <div class="hs-label">运动 35分钟</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="quick">
+          <div class="quick-item"><div class="qi-ico">🏃</div><div class="qi-t">记步数</div></div>
+          <div class="quick-item"><div class="qi-ico">💧</div><div class="qi-t">记饮水</div></div>
+          <div class="quick-item"><div class="qi-ico">⚖️</div><div class="qi-t">记体重</div></div>
+          <div class="quick-item"><div class="qi-ico">❤️</div><div class="qi-t">记血压</div></div>
+          <div class="quick-item"><div class="qi-ico">💓</div><div class="qi-t">记心率</div></div>
+          <div class="quick-item"><div class="qi-ico">😴</div><div class="qi-t">记睡眠</div></div>
+          <div class="quick-item"><div class="qi-ico">🩸</div><div class="qi-t">记血糖</div></div>
+          <div class="quick-item"><div class="qi-ico">🌡️</div><div class="qi-t">记体温</div></div>
+        </div>
+
+        <div class="block">
+          <div class="row-between" style="padding:0 2px 10px;">
+            <span class="section-title">最新指标</span><span class="more">全部 ›</span>
+          </div>
+          <div class="vitals">
+            <div class="card vital"><div class="v-row"><span class="v-label">体重</span><span class="tag tag-good">正常</span></div><div class="v-value">65.8<span class="v-unit">kg</span></div><div class="v-sub">刚刚</div></div>
+            <div class="card vital"><div class="v-row"><span class="v-label">血压</span><span class="tag tag-good">正常</span></div><div class="v-value">128/82<span class="v-unit">mmHg</span></div><div class="v-sub">12小时前</div></div>
+            <div class="card vital"><div class="v-row"><span class="v-label">心率</span><span class="tag tag-good">正常</span></div><div class="v-value">72<span class="v-unit">bpm</span></div><div class="v-sub">刚刚</div></div>
+            <div class="card vital"><div class="v-row"><span class="v-label">血糖</span><span class="tag tag-good">正常</span></div><div class="v-value">5.4<span class="v-unit">mmol/L</span></div><div class="v-sub">2小时前</div></div>
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="row-between" style="padding:0 2px 10px;">
+            <span class="section-title">体重趋势</span><span class="more" onclick="go('report')">报告 ›</span>
+          </div>
+          <div class="card">
+            <div class="chart">
+              <div class="bar-col"><div class="bar-track"><div class="bar" style="height:90%"></div></div><div class="bar-val">66.2</div><div class="bar-label">08/21</div></div>
+              <div class="bar-col"><div class="bar-track"><div class="bar" style="height:78%"></div></div><div class="bar-val">66.0</div><div class="bar-label">08/22</div></div>
+              <div class="bar-col"><div class="bar-track"><div class="bar" style="height:65%"></div></div><div class="bar-val">65.9</div><div class="bar-label">08/23</div></div>
+              <div class="bar-col"><div class="bar-track"><div class="bar" style="height:55%"></div></div><div class="bar-val">65.7</div><div class="bar-label">08/24</div></div>
+              <div class="bar-col"><div class="bar-track"><div class="bar" style="height:45%"></div></div><div class="bar-val">65.6</div><div class="bar-label">08/25</div></div>
+              <div class="bar-col"><div class="bar-track"><div class="bar" style="height:35%"></div></div><div class="bar-val">65.5</div><div class="bar-label">08/26</div></div>
+              <div class="bar-col"><div class="bar-track"><div class="bar" style="height:25%"></div></div><div class="bar-val">65.8</div><div class="bar-label">08/27</div></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="block">
+          <div class="row-between" style="padding:0 2px 10px;">
+            <span class="section-title">今日用药</span><span class="more">管理 ›</span>
+          </div>
+          <div class="card">
+            <div class="med-row"><div class="med-ico taken">💊</div><div style="flex:1"><div class="med-name">维生素D · 1粒</div><div class="med-time">08:00 · 每日一次</div></div><div class="med-state done">已服</div></div>
+            <div class="med-row"><div class="med-ico">💊</div><div style="flex:1"><div class="med-name">鱼油 · 2粒</div><div class="med-time">20:00 · 每日一次</div></div><div class="med-state">未服</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== 记录 ===== -->
+      <div class="page" id="p-record">
+        <div class="tabs">
+          <div class="tab on">⚖️ 体重</div><div class="tab">❤️ 血压</div><div class="tab">💓 心率</div><div class="tab">😴 睡眠</div><div class="tab">🏃 步数</div><div class="tab">🩸 血糖</div><div class="tab">💧 饮水</div>
+        </div>
+        <div class="card" style="margin-bottom:12px;">
+          <div class="row-between"><span class="section-title">体重趋势</span><span class="dim">最近7次</span></div>
+          <div class="chart">
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:90%"></div></div><div class="bar-val">66.2</div><div class="bar-label">08/21</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:78%"></div></div><div class="bar-val">66.0</div><div class="bar-label">08/22</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:65%"></div></div><div class="bar-val">65.9</div><div class="bar-label">08/23</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:55%"></div></div><div class="bar-val">65.7</div><div class="bar-label">08/24</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:45%"></div></div><div class="bar-val">65.6</div><div class="bar-label">08/25</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:35%"></div></div><div class="bar-val">65.5</div><div class="bar-label">08/26</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:25%"></div></div><div class="bar-val">65.8</div><div class="bar-label">08/27</div></div>
+          </div>
+        </div>
+        <div class="card rec"><div style="flex:1"><div class="rec-val">65.8<span class="rec-unit">kg</span></div><div class="rec-meta">2026-08-27 · 刚刚</div></div><div class="rec-del">删除</div></div>
+        <div class="card rec"><div style="flex:1"><div class="rec-val">65.5<span class="rec-unit">kg</span></div><div class="rec-meta">2026-08-26 · 昨天</div></div><div class="rec-del">删除</div></div>
+        <div class="card rec"><div style="flex:1"><div class="rec-val">65.6<span class="rec-unit">kg</span></div><div class="rec-meta">2026-08-25 · 1天前</div></div><div class="rec-del">删除</div></div>
+        <div class="card rec"><div style="flex:1"><div class="rec-val">65.7<span class="rec-unit">kg</span></div><div class="rec-meta">2026-08-24 · 2天前</div><div class="rec-del">删除</div></div></div>
+      </div>
+
+      <!-- ===== 运动 ===== -->
+      <div class="page" id="p-exercise">
+        <div class="summary">
+          <div class="sum-item"><div class="sum-num">4</div><div class="sum-label">运动次数</div></div>
+          <div class="sum-div"></div>
+          <div class="sum-item"><div class="sum-num">125<span class="sum-u">分钟</span></div><div class="sum-label">累计时长</div></div>
+          <div class="sum-div"></div>
+          <div class="sum-item"><div class="sum-num">770<span class="sum-u">kcal</span></div><div class="sum-label">消耗热量</div></div>
+        </div>
+        <div class="filters">
+          <div class="filter on">全部</div><div class="filter">跑步</div><div class="filter">步行</div><div class="filter">骑行</div><div class="filter">游泳</div><div class="filter">瑜伽</div><div class="filter">力量训练</div>
+        </div>
+        <div class="card ex"><div class="ex-ico">步行</div><div style="flex:1"><div class="ex-title">步行 · 中强度</div><div class="ex-meta">2026-08-27 · 刚刚</div><div><span class="es">35分钟</span><span class="es-dot">·</span><span class="es">130kcal</span></div></div><div class="ex-del">删除</div></div>
+        <div class="card ex"><div class="ex-ico">力量</div><div style="flex:1"><div class="ex-title">力量训练 · 高强度</div><div class="ex-meta">2026-08-26 · 1天前</div><div><span class="es">50分钟</span><span class="es-dot">·</span><span class="es">280kcal</span></div></div><div class="ex-del">删除</div></div>
+        <div class="card ex"><div class="ex-ico">跑步</div><div style="flex:1"><div class="ex-title">跑步 · 高强度</div><div class="ex-meta">2026-08-25 · 2天前</div><div><span class="es">40分钟</span><span class="es-dot">·</span><span class="es">360kcal</span></div></div><div class="ex-del">删除</div></div>
+      </div>
+
+      <!-- ===== 用药 ===== -->
+      <div class="page" id="p-medication">
+        <div class="progress-card">
+          <div class="row-between">
+            <div><div class="pc-title">今日服药</div><div class="pc-sub">1/2 已完成</div></div>
+            <div class="pc-ring"><div class="pc-ring-inner">50<span class="pc-pct">%</span></div></div>
+          </div>
+        </div>
+        <span class="section-title" style="padding:8px 2px;display:block;">今日清单</span>
+        <div class="card med"><div class="med-check checked"><span class="check-mark">✓</span></div><div style="flex:1"><div class="med-name">维生素D</div><div class="med-info">1粒 · 08:00 · 每日一次</div><div class="med-info">餐后服用</div></div><div class="mc-del">删除</div></div>
+        <div class="card med"><div class="med-check"></div><div style="flex:1"><div class="med-name">鱼油</div><div class="med-info">2粒 · 20:00 · 每日一次</div><div class="med-info">随餐</div></div><div class="mc-del">删除</div></div>
+      </div>
+
+      <!-- ===== 我的 ===== -->
+      <div class="page" id="p-profile">
+        <div class="user-card">
+          <div class="avatar">健</div>
+          <div style="flex:1"><div class="u-name">健康用户</div><div class="u-info">男 · 30岁 · 170cm</div></div>
+          <div class="u-edit">编辑</div>
+        </div>
+        <div class="card bmi-card">
+          <div class="row-between"><div><div class="bmi-label">身体质量指数 BMI</div><div class="bmi-val">22.8</div></div><span class="tag tag-good">正常</span></div>
+          <div class="bmi-bar"><div class="bmi-seg seg-1"></div><div class="bmi-seg seg-2"></div><div class="bmi-seg seg-3"></div><div class="bmi-seg seg-4"></div></div>
+          <div class="bmi-legend"><span>偏瘦</span><span>正常</span><span>超重</span><span>肥胖</span></div>
+        </div>
+        <span class="section-title block-title">健康目标</span>
+        <div class="card">
+          <div class="goal-row"><span class="goal-l">每日步数</span><span class="goal-v">8000 步</span></div>
+          <div class="goal-row"><span class="goal-l">每日饮水</span><span class="goal-v">2000 ml</span></div>
+          <div class="goal-row"><span class="goal-l">每日睡眠</span><span class="goal-v">8 小时</span></div>
+          <div class="goal-row last"><span class="goal-l">目标体重</span><span class="goal-v">65 kg</span></div>
+        </div>
+        <span class="section-title block-title">数据统计</span>
+        <div class="stats">
+          <div class="card stat"><div class="stat-num">28</div><div class="stat-l">健康记录</div></div>
+          <div class="card stat"><div class="stat-num">4</div><div class="stat-l">运动次数</div></div>
+          <div class="card stat"><div class="stat-num">2</div><div class="stat-l">用药提醒</div></div>
+        </div>
+        <div class="card menu">
+          <div class="menu-row" onclick="go('report')"><span class="m-ico">📊</span><span class="m-label">健康报告</span><span class="m-arrow">›</span></div>
+          <div class="menu-row"><span class="m-ico">👤</span><span class="m-label">编辑资料</span><span class="m-arrow">›</span></div>
+          <div class="menu-row"><span class="m-ico">🗑️</span><span class="m-label">清空数据</span><span class="m-arrow">›</span></div>
+          <div class="menu-row last"><span class="m-ico">ℹ️</span><span class="m-label">关于</span><span class="m-arrow">›</span></div>
+        </div>
+        <div class="foot-tip">健康管家 v1.0.0 · 数据仅保存在本机</div>
+      </div>
+
+      <!-- ===== 报告 ===== -->
+      <div class="page" id="p-report">
+        <div class="rep-head">
+          <div class="row-between">
+            <span class="back" onclick="go('profile')">‹ 返回</span>
+            <span class="dim"></span>
+          </div>
+          <div class="rh-title" style="margin-top:6px;">健康报告</div>
+          <div class="rh-sub">近7天 · 已生成</div>
+        </div>
+        <div class="avg-grid">
+          <div class="card avg"><div class="avg-num">65.6</div><div class="avg-u">kg</div><div class="avg-l">平均体重</div></div>
+          <div class="card avg"><div class="avg-num">6420</div><div class="avg-u">步</div><div class="avg-l">日均步数</div></div>
+          <div class="card avg"><div class="avg-num">7.3</div><div class="avg-u">h</div><div class="avg-l">日均睡眠</div></div>
+        </div>
+        <div class="card ex-sum">
+          <div class="row-between"><span class="section-title">本周运动</span><span class="dim">4次</span></div>
+          <div class="ex-stats"><div class="es-cell"><div class="es-num">125</div><div class="es-l">分钟</div></div><div class="es-div"></div><div class="es-cell"><div class="es-num">770</div><div class="es-l">kcal</div></div></div>
+        </div>
+        <div class="card chart-card">
+          <div class="row-between"><span class="section-title">体重变化</span><span class="dim">kg</span></div>
+          <div class="chart">
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:90%"></div></div><div class="bar-label">08/21</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:78%"></div></div><div class="bar-label">08/22</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:65%"></div></div><div class="bar-label">08/23</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:55%"></div></div><div class="bar-label">08/24</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:45%"></div></div><div class="bar-label">08/25</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:35%"></div></div><div class="bar-label">08/26</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:25%"></div></div><div class="bar-label">08/27</div></div>
+          </div>
+        </div>
+        <div class="card chart-card">
+          <div class="row-between"><span class="section-title">每日步数</span><span class="dim">步</span></div>
+          <div class="chart">
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:60%"></div></div><div class="bar-label">08/21</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:80%"></div></div><div class="bar-label">08/22</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:45%"></div></div><div class="bar-label">08/23</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:90%"></div></div><div class="bar-label">08/24</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:55%"></div></div><div class="bar-label">08/25</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:70%"></div></div><div class="bar-label">08/26</div></div>
+            <div class="bar-col"><div class="bar-track"><div class="bar" style="height:65%"></div></div><div class="bar-label">08/27</div></div>
+          </div>
+        </div>
+        <span class="section-title block-title">健康建议</span>
+        <div class="card tip"><div class="tip-ico">✅</div><div class="tip-text">步数达标，保持规律运动有助于维持健康体重。</div></div>
+        <div class="card tip"><div class="tip-ico">😴</div><div class="tip-text">睡眠时长充足，规律作息有助于身体恢复。</div></div>
+        <div class="card tip"><div class="tip-ico">⚖️</div><div class="tip-text">近期平均体重 65.6 kg，结合身高可评估 BMI 是否在正常区间。</div></div>
+        <div class="card tip"><div class="tip-ico">💧</div><div class="tip-text">记得少量多次饮水，每日 1500-2000ml 为宜。</div></div>
+      </div>
+
+    </div>
+
+    <div class="tabbar" id="tabbar">
+      <div class="t on" data-p="home"><span class="dot">🏠</span>首页</div>
+      <div class="t" data-p="record"><span class="dot">📋</span>记录</div>
+      <div class="t" data-p="exercise"><span class="dot">🏃</span>运动</div>
+      <div class="t" data-p="medication"><span class="dot">💊</span>用药</div>
+      <div class="t" data-p="profile"><span class="dot">👤</span>我的</div>
+    </div>
+  </div>
+
+<script>
+  const titles = { home:'健康管家', record:'健康记录', exercise:'运动记录', medication:'用药提醒', profile:'我的', report:'健康报告' };
+  function go(p){
+    document.querySelectorAll('.page').forEach(el=>el.classList.remove('on'));
+    document.getElementById('p-'+p).classList.add('on');
+    document.getElementById('nav').textContent = titles[p];
+    document.getElementById('scroll').scrollTop = 0;
+    document.querySelectorAll('.tabbar .t').forEach(t=>t.classList.toggle('on', t.dataset.p===p));
+    const tb = document.getElementById('tabbar');
+    tb.style.display = (p==='report') ? 'none' : 'flex';
+  }
+  document.querySelectorAll('.tabbar .t').forEach(t => t.addEventListener('click', ()=>go(t.dataset.p)));
+  // 简单交互：用药打卡、记录删除、指标 Tab 切换
+  document.querySelectorAll('#p-medication .med').forEach(m=>{
+    m.querySelector('.med-check').addEventListener('click',function(){
+      this.classList.toggle('checked');
+      this.querySelector('.check-mark') ? this.innerHTML='' : (this.innerHTML='<span class="check-mark">✓</span>');
+    });
+  });
+  document.querySelectorAll('.tabs .tab').forEach(t=>t.addEventListener('click',function(){
+    this.parentNode.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+    this.classList.add('on');
+  }));
+  document.querySelectorAll('.filters .filter').forEach(f=>f.addEventListener('click',function(){
+    this.parentNode.querySelectorAll('.filter').forEach(x=>x.classList.remove('on'));
+    this.classList.add('on');
+  }));
+</script>
+</body>
+</html>
